@@ -30,14 +30,23 @@ Current Phase: Backend Foundation
 - Flutter
 
 ### Backend
-- NestJS
-- PostgreSQL
-- Prisma ORM (database access and migrations)
-- RESTful API architectur
+- Framework: NestJS
+- ORM: Prisma
+- Database: PostgreSQL
+- Authentication: JWT
+- Language: TypeScript
 
 ### Infrastructure
 - Railway / Render
 - Vercel
+
+## Project Structure
+
+book-tracker/
+├── backend/
+├── web/
+├── mobile/
+├── docs/
 
 ## Architecture
 
