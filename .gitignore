@@ -5,3 +5,5 @@ build/
 .flutter-plugins
 .flutter-plugins-dependencies
 .dart_tool/
+backend/node_modules/
+backend/.env
