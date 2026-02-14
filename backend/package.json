@@ -16,11 +16,13 @@
     "@nestjs/common": "^11.1.13",
     "@nestjs/core": "^11.1.13",
     "@nestjs/platform-express": "^11.1.13",
+    "@prisma/client": "^7.4.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"
   },
   "devDependencies": {
     "@types/node": "^25.2.3",
+    "prisma": "^7.4.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }
