@@ -6,12 +6,27 @@ datasource db {
   provider = "postgresql"
 }
 
+enum ReadingStatus {
+  WANT_TO_READ
+  READING
+  PAUSED
+  COMPLETED
+  DNF
+}
+
+enum ProgressUnit {
+  PERCENT
+  PAGES
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  userBooks UserBook[]
 }
 
 model Book {
@@ -20,8 +35,14 @@ model Book {
   author    String?
   coverUrl  String?
   isbn      String?
+  pageCount Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  userBooks UserBook[]
+  bookGenrels BookGenre[]
+
+  @@index([title])
 }
 
 model Genre {
@@ -29,4 +50,40 @@ model Genre {
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  bookGenres  BookGenre[]
+}
+
+model UserBook {
+  id        String   @id @default(uuid())
+  userId    String
+  bookId    String
+  status    ReadingStatus @default(WANT_TO_READ)
+  progressUnit  ProgressUnit  @default(PERCENT)
+  progress  Int @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  user  User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book  Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, bookId])
+  @@index([userId])
+  @@index([bookId])
+  @@index([status])
+}
+
+model BookGenre {
+  id        String   @id @default(uuid())
+  bookId    String
+  genreId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  book  Book  @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  genre Genre @relation(fields: [genreId], references: [id], onDelete: Cascade)
+
+  @@unique([bookId, genreId])
+  @@index([bookId])
+  @@index([genreId])
 }
