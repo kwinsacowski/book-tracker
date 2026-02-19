@@ -11,10 +11,9 @@ yarn-debug.log*
 yarn-error.log*
 backend/node_modules/
 
-prisma/migrations/
-
 dist/
 build/
+backend/dist/
 
 .flutter-plugins
 .flutter-plugins-dependencies
