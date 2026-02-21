@@ -3,7 +3,6 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from '../src/common/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
-import { BooksModule } from './modules/books
 
 @Module({
   imports: [
@@ -13,7 +12,6 @@ import { BooksModule } from './modules/books
     PrismaModule,
     AuthModule,
     UsersModule,
-    BooksModule,
   ],
 })
 export class AppModule {}
