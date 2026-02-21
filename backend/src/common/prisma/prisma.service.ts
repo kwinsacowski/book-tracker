@@ -12,7 +12,7 @@ export class PrismaService
 
     if (!connectionString) {
       throw new Error(
-        'DATABASE_URL is missing. Check backend/.env and that it is being loaded.'
+        'DATABASE_URL is missing. Check backend/.env and that it is being loaded.',
       );
     }
 
