@@ -4,6 +4,11 @@ import 'dotenv/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+
+  const port = Number(process.env.PORT) || 3000;
+  await app.listen(port);
+
+  console.log(`API running at http://localhost:${port}`);
 }
-bootstrap();
+
+void bootstrap();
