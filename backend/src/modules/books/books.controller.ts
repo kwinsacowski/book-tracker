@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import type { AuthUser } from '../auth/current-user.decorator';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { BooksService } from './books.service';
+import { AddToLibraryDto } from './dto/add-to-library.dto';
+import { UpdateUserBookDto } from './dto/update-userbook.dto';
 
 @Controller('books')
 @UseGuards(JwtAuthGuard)
@@ -10,16 +12,29 @@ export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Get()
-  findAll(@CurrentUser() user: AuthUser) {
-    return this.booksService.findAll();
+  findMyLibrary(@CurrentUser() userInfo: AuthUser) {
+    return this.booksService.findMyLibrary(userInfo.id)
   }
 
   @Post()
-  create(
-    @Body()
-    body: { title: string; author?: string; pageCount: number },
+  addToLibrary(@Body() body: AddToLibraryDto, @CurrentUser() user: AuthUser) {
+    return this.booksService.addToLibrary(user.id, body);
+  }
+
+  @Patch(':bookId')
+  updateMyBook(
+    @Param('bookId') bookId: string,
+    @Body() body: UpdateUserBookDto,
     @CurrentUser() user: AuthUser,
   ) {
-    return this.booksService.create(body);
+    return this.booksService.updateMyBook(user.id, bookId, body);
+  }
+
+  @Delete(':bookId')
+  removeFromMyLibrary(
+    @Param('bookId') bookId: string,
+    @CurrentUser() user: AuthUser,
+  ) {
+    return this.booksService.removeFromMyLibrary(user.id, bookId);
   }
 }
