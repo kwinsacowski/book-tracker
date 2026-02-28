@@ -24,15 +24,17 @@ model Book {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   pageCount   Int
+  
   bookGenres BookGenre[]
   userBooks   UserBook[]
 
   @@index([title])
+  @@index([isbn])
 }
 
 model Genre {
   id         String      @id @default(uuid())
-  name       String
+  name       String      @unique
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
   bookGenres BookGenre[]
