@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import type { AuthUser } from '../auth/current-user.decorator';
 import { CurrentUser } from '../auth/current-user.decorator';
@@ -13,7 +22,7 @@ export class BooksController {
 
   @Get()
   findMyLibrary(@CurrentUser() userInfo: AuthUser) {
-    return this.booksService.findMyLibrary(userInfo.id)
+    return this.booksService.findMyLibrary(userInfo.id);
   }
 
   @Post()

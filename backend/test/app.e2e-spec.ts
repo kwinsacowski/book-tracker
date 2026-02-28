@@ -48,6 +48,19 @@ describe('App (e2e)', () => {
     await request(httpServer).get('/books').expect(401);
   });
 
+  it('GET /users/me returns current user', async () => {
+    const httpServer = app.getHttpServer() as Parameters<typeof request>[0];
+    const token = await registerAndLogin(httpServer);
+
+    const res = await request(httpServer)
+      .get('/users/me')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+
+    expect(res.body).toHaveProperty('id');
+    expect(res.body).toHaveProperty('email');
+  });
+
   it('Library flow: add -> list -> update -> delete', async () => {
     const httpServer = app.getHttpServer() as Parameters<typeof request>[0];
     const token = await registerAndLogin(httpServer);
