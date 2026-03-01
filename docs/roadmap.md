@@ -4,8 +4,7 @@ This document outlines the planned development phases of the Book Tracker applic
 
 ---
 
-## Phase 1: Backend Foundation (Current Phase)
-
+## Phase 1: Backend Foundation
 Goals:
 - Set up NestJS backend
 - Configure PostgreSQL database
@@ -14,11 +13,11 @@ Goals:
 - Create core database schema
 - Establish development environment configuration
 
-Status: In Progress
+Status: Complete
 
 ---
 
-## Phase 2: Core API Development
+## Phase 2: Core API Development (Current Phase)
 
 Goals:
 - Create Book model
@@ -31,7 +30,7 @@ Goals:
 - Add integration tests for controllers/endpoints (Jest + Supertest)
 - Add database testing strategy (separate test DB or containerized Postgres)
 
-Status: Pending
+Status: Mostly Complete
 
 ---
 
