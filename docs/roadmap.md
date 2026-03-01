@@ -17,7 +17,7 @@ Status: Complete
 
 ---
 
-## Phase 2: Core API Development (Current Phase)
+## Phase 2: Core API Development
 
 Goals:
 - Create Book model
@@ -30,11 +30,11 @@ Goals:
 - Add integration tests for controllers/endpoints (Jest + Supertest)
 - Add database testing strategy (separate test DB or containerized Postgres)
 
-Status: Mostly Complete
-
+Status: Complete
+Phase 2 complete means: unit + e2e tests passing locally and test DB reset workflow configured.
 ---
 
-## Phase 3: Web Application (Next.js)
+## Phase 3: Web Application (Next.js) (Next Phase)
 
 Goals:
 - Set up Next.js frontend
