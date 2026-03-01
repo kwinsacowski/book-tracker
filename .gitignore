@@ -4,6 +4,8 @@
 .env.development
 .env.production
 backend/.env
+.env.test
+backend/.env.test
 
 node_modules/
 npm-debug.log*
