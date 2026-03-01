@@ -120,4 +120,14 @@ describe('App (e2e)', () => {
     const list2 = listRes2.body as Array<{ book: { id: string } }>;
     expect(list2.some((row) => row.book.id === bookId)).toBe(false);
   });
+  it('PATCH /books/:bookId returns 404 if not in library', async () => {
+    const httpServer = app.getHttpServer() as Parameters<typeof request>[0];
+    const token = await registerAndLogin(httpServer);
+
+    await request(httpServer)
+      .patch('/books/does-not-exist')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ progress: 1 })
+      .expect(404);
+  });
 });
