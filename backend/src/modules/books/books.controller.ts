@@ -6,9 +6,9 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
+  // UseGuards
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+// import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import type { AuthUser } from '../auth/current-user.decorator';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { BooksService } from './books.service';
@@ -16,13 +16,13 @@ import { AddToLibraryDto } from './dto/add-to-library.dto';
 import { UpdateUserBookDto } from './dto/update-userbook.dto';
 
 @Controller('books')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Get()
-  findMyLibrary(@CurrentUser() userInfo: AuthUser) {
-    return this.booksService.findMyLibrary(userInfo.id);
+  findMyLibrary() {
+    return this.booksService.findMyLibrary();
   }
 
   @Post()

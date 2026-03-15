@@ -7,9 +7,9 @@ import { UpdateUserBookDto } from './dto/update-userbook.dto';
 export class BooksService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findMyLibrary(userId: string) {
+  findMyLibrary() {
     return this.prisma.userBook.findMany({
-      where: { userId },
+      // where: { userId },
       orderBy: { updatedAt: 'desc' },
       include: {
         book: {
