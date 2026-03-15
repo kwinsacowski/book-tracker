@@ -1,43 +1,42 @@
 import Link from "next/link";
-import { APP_NAME, THEME } from "@/config/app";
+import { APP_NAME, APP_TAGLINE } from "@/config/app";
+import styles from "./navbar.module.css";
 
 export default function NavBar() {
-    return (
-        <aside
-                style={{
-                    width: '240px',
-                    backgroundColor: THEME.colors.mossGreen,
-                    color: THEME.colors.parchment,
-                    borderRight: `1px solid ${THEME.colors.antiqueGold}`,
-                    padding: '1.5rem 1rem',
-                }}
-            >
-                <h2
-                    style={{
-                        marginTop: 0,
-                        marginBottom: "1.5rem",
-                        color: THEME.colors.antiqueGold,
-                    }}
-                >
-                    {APP_NAME}
-                </h2>
+  return (
+    <aside className={styles.sidebar}>
+      <div>
+        <div className={styles.brandBlock}>
+          <p className={styles.eyebrow}>Reading Dashboard</p>
+          <h2 className={styles.brand}>{APP_NAME}</h2>
+          <p className={styles.tagline}>{APP_TAGLINE}</p>
+        </div>
 
-                <nav>
-                    <ul style={{listStyle: 'none', padding: 0, margin: 0, lineHeight: '2.2'}}>
-                        <li>
-                            <Link href="/">Dashboard</Link>
-                        </li>
-                        <li>
-                            <Link href="/library">Library</Link>
-                        </li>
-                        <li>
-                            <Link href="/login">Login</Link>
-                        </li>
-                        <li>
-                            <Link href="/register">Register</Link>
-                        </li>
-                    </ul>
-                </nav>
-            </aside>
-    )
+        <nav className={styles.nav}>
+          <ul className={styles.navList}>
+            <li className={styles.navItem}>
+              <Link href="/">Dashboard</Link>
+            </li>
+            <li className={styles.navItem}>
+              <Link href="/library">Library</Link>
+            </li>
+            <li className={styles.navItem}>
+              <Link href="/login">Login</Link>
+            </li>
+            <li className={styles.navItem}>
+              <Link href="/register">Register</Link>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div className={styles.footerCard}>
+        <p className={styles.footerTitle}>Build your reading ritual</p>
+        <p className={styles.footerText}>
+          Organize your books, track progress, and keep your next favorite story
+          close.
+        </p>
+      </div>
+    </aside>
+  );
 }

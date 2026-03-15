@@ -1,0 +1,101 @@
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  padding: 28px 20px;
+  background: linear-gradient(180deg, #425347 0%, #2f3e34 100%);
+  color: #f5f1e8;
+  border-right: 1px solid rgba(194, 168, 120, 0.28);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+}
+
+.brandBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.72);
+}
+
+.brand {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #f5f1e8;
+}
+
+.tagline {
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(245, 241, 232, 0.78);
+  max-width: 180px;
+}
+
+.nav {
+  margin-top: 32px;
+}
+
+.navList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.navItem a {
+  display: block;
+  padding: 12px 14px;
+  border-radius: 14px;
+  color: #f5f1e8;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.navItem a:hover {
+  background: rgba(255, 250, 242, 0.10);
+  border-color: rgba(194, 168, 120, 0.28);
+  transform: translateX(2px);
+}
+
+.footerCard {
+  margin-top: 28px;
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255, 250, 242, 0.08);
+  border: 1px solid rgba(194, 168, 120, 0.22);
+}
+
+.footerTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f5f1e8;
+  margin-bottom: 6px;
+}
+
+.footerText {
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(245, 241, 232, 0.78);
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+    position: static;
+    padding: 20px;
+  }
+
+  .tagline {
+    max-width: none;
+  }
+}

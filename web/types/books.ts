@@ -1,6 +1,6 @@
 export type Book = {
     status: string;
-    Progress: number;
+    progress: number;
     progressUnit: string;
     book: {
         id: string;

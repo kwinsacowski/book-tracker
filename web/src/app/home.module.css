@@ -1,0 +1,266 @@
+.page {
+  min-height: 100vh;
+  padding: 36px;
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.heroCard,
+.libraryCard {
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  background: var(--surface);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow);
+}
+
+.heroCard {
+  padding: 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroCard::after {
+  content: "";
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  right: -50px;
+  top: -50px;
+  border-radius: 999px;
+  background: rgba(194, 168, 120, 0.14);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(95, 122, 97, 0.10);
+  border: 1px solid rgba(95, 122, 97, 0.18);
+  color: #2f3e34;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+.logoWrap {
+  margin-bottom: 18px;
+}
+
+.title {
+  font-size: clamp(2.2rem, 4vw, 4rem);
+  line-height: 1;
+  color: #2f3e34;
+  margin-bottom: 16px;
+  max-width: 10ch;
+}
+
+.subtitle {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: rgba(31, 37, 32, 0.82);
+  max-width: 58ch;
+  margin-bottom: 24px;
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.primaryBtn,
+.secondaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 18px;
+  border-radius: 16px;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.primaryBtn {
+  background: #2f3e34;
+  color: #f5f1e8;
+  box-shadow: var(--shadow-soft);
+}
+
+.primaryBtn:hover {
+  transform: translateY(-1px);
+  background: #243129;
+}
+
+.secondaryBtn {
+  background: rgba(255, 250, 242, 0.7);
+  color: #2f3e34;
+  border: 1px solid rgba(47, 62, 52, 0.12);
+}
+
+.secondaryBtn:hover {
+  transform: translateY(-1px);
+  background: #fffaf2;
+}
+
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.statCard {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255, 250, 242, 0.72);
+  border: 1px solid rgba(47, 62, 52, 0.08);
+}
+
+.statLabel {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(31, 37, 32, 0.58);
+  margin-bottom: 8px;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2f3e34;
+}
+
+.libraryCard {
+  padding: 28px;
+}
+
+.libraryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.libraryTitle {
+  font-size: 1.5rem;
+  color: #2f3e34;
+}
+
+.libraryHint {
+  font-size: 0.95rem;
+  color: rgba(31, 37, 32, 0.65);
+}
+
+.bookList {
+  list-style: none;
+  display: grid;
+  gap: 14px;
+}
+
+.bookCard {
+  padding: 18px;
+  border-radius: 20px;
+  background: var(--surface-strong);
+  border: 1px solid rgba(47, 62, 52, 0.08);
+  box-shadow: var(--shadow-soft);
+}
+
+.bookTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+  margin-bottom: 10px;
+}
+
+.bookTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #2f3e34;
+  margin-bottom: 4px;
+}
+
+.bookAuthor {
+  font-size: 0.95rem;
+  color: rgba(31, 37, 32, 0.64);
+}
+
+.statusPill {
+  white-space: nowrap;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(95, 122, 97, 0.10);
+  color: #46604a;
+  border: 1px solid rgba(95, 122, 97, 0.18);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.progressRow {
+  display: grid;
+  gap: 8px;
+}
+
+.progressLabel {
+  font-size: 0.92rem;
+  color: rgba(31, 37, 32, 0.72);
+}
+
+.progressTrack {
+  width: 100%;
+  height: 10px;
+  background: rgba(47, 62, 52, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #5f7a61 0%, #c2a878 100%);
+}
+
+.emptyState {
+  padding: 22px;
+  border-radius: 18px;
+  background: rgba(255, 250, 242, 0.62);
+  border: 1px dashed rgba(47, 62, 52, 0.18);
+  color: rgba(31, 37, 32, 0.72);
+  line-height: 1.7;
+}
+
+@media (max-width: 1100px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 18px;
+  }
+
+  .heroCard,
+  .libraryCard {
+    padding: 22px;
+  }
+
+  .statsRow {
+    grid-template-columns: 1fr;
+  }
+
+  .bookTop {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

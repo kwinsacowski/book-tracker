@@ -26,9 +26,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <div style={{ display: "flex", minHeight: "100vh" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "260px 1fr",
+            minHeight: "100vh",
+          }}
+        >
           <NavBar />
-          <main style={{ flex: 1 }}>{children}</main>
+          <main style={{ minWidth: 0 }}>{children}</main>
         </div>
       </body>
     </html>
