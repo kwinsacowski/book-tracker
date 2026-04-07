@@ -1,0 +1,123 @@
+.page {
+  min-height: 100vh;
+  padding: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  width: 100%;
+  max-width: 560px;
+  padding: 36px;
+  border-radius: 28px;
+  background: var(--surface);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(95, 122, 97, 0.1);
+  border: 1px solid rgba(95, 122, 97, 0.18);
+  color: #2f3e34;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+.title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.1;
+  color: #2f3e34;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(31, 37, 32, 0.75);
+  margin-bottom: 28px;
+}
+
+.form {
+  display: grid;
+  gap: 18px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #2f3e34;
+}
+
+.input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(47, 62, 52, 0.14);
+  background: rgba(255, 250, 242, 0.78);
+  color: #1f2520;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.input:focus {
+  border-color: rgba(95, 122, 97, 0.45);
+  box-shadow: 0 0 0 4px rgba(95, 122, 97, 0.12);
+}
+
+.primaryButton {
+  margin-top: 8px;
+  border: none;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: #2f3e34;
+  color: #f5f1e8;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.primaryButton:hover {
+  transform: translateY(-1px);
+  background: #243129;
+}
+
+.footerText {
+  margin-top: 22px;
+  font-size: 0.95rem;
+  color: rgba(31, 37, 32, 0.72);
+}
+
+.link {
+  font-weight: 700;
+  color: #2f3e34;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 18px;
+  }
+
+  .card {
+    padding: 24px;
+  }
+}
