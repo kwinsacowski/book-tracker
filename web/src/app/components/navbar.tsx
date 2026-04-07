@@ -1,8 +1,29 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { APP_NAME, APP_TAGLINE } from "@/config/app";
+import {
+  clearAuth,
+  getDisplayName,
+  getStoredUser,
+  isLoggedIn,
+} from "../lib/auth";
 import styles from "./navbar.module.css";
 
 export default function NavBar() {
+  const router = useRouter();
+
+  const user = getStoredUser();
+  const loggedIn = isLoggedIn();
+  const displayName = getDisplayName(user);
+
+  function handleLogout() {
+    clearAuth();
+    router.push("/");
+    router.refresh();
+  }
+
   return (
     <aside className={styles.sidebar}>
       <div>
@@ -10,6 +31,10 @@ export default function NavBar() {
           <p className={styles.eyebrow}>Reading Dashboard</p>
           <h2 className={styles.brand}>{APP_NAME}</h2>
           <p className={styles.tagline}>{APP_TAGLINE}</p>
+
+          {loggedIn ? (
+            <div className={styles.userBadge}>Signed in as {displayName}</div>
+          ) : null}
         </div>
 
         <nav className={styles.nav}>
@@ -17,15 +42,31 @@ export default function NavBar() {
             <li className={styles.navItem}>
               <Link href="/">Dashboard</Link>
             </li>
+
             <li className={styles.navItem}>
               <Link href="/library">Library</Link>
             </li>
-            <li className={styles.navItem}>
-              <Link href="/login">Login</Link>
-            </li>
-            <li className={styles.navItem}>
-              <Link href="/register">Register</Link>
-            </li>
+
+            {!loggedIn ? (
+              <>
+                <li className={styles.navItem}>
+                  <Link href="/login">Login</Link>
+                </li>
+                <li className={styles.navItem}>
+                  <Link href="/register">Register</Link>
+                </li>
+              </>
+            ) : (
+              <li className={styles.navItem}>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className={styles.logoutButton}
+                >
+                  Log Out
+                </button>
+              </li>
+            )}
           </ul>
         </nav>
       </div>

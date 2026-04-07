@@ -39,6 +39,19 @@
   max-width: 180px;
 }
 
+.userBadge {
+  margin-top: 4px;
+  display: inline-flex;
+  width: fit-content;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 250, 242, 0.08);
+  border: 1px solid rgba(194, 168, 120, 0.22);
+  color: #f5f1e8;
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .nav {
   margin-top: 32px;
 }
@@ -50,18 +63,27 @@
   gap: 10px;
 }
 
-.navItem a {
+.navItem a,
+.logoutButton {
   display: block;
+  width: 100%;
   padding: 12px 14px;
   border-radius: 14px;
   color: #f5f1e8;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid transparent;
   transition: all 0.2s ease;
+  text-align: left;
+  font: inherit;
 }
 
-.navItem a:hover {
-  background: rgba(255, 250, 242, 0.10);
+.logoutButton {
+  cursor: pointer;
+}
+
+.navItem a:hover,
+.logoutButton:hover {
+  background: rgba(255, 250, 242, 0.1);
   border-color: rgba(194, 168, 120, 0.28);
   transform: translateX(2px);
 }
