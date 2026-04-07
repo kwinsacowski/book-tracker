@@ -10,15 +10,16 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(email: string, password: string) {
+  async register(email: string, password: string, name: string) {
     const hashed = await bcrypt.hash(password, 10);
 
     const user = await this.usersService.create({
+      name,
       email,
       password: hashed,
     });
 
-    return this.signToken(user.id, user.email);
+    return this.signToken(user.id, user.email, user.name);
   }
 
   async login(email: string, password: string) {
@@ -29,14 +30,15 @@ export class AuthService {
     const match = await bcrypt.compare(password, user.password);
     if (!match) throw new UnauthorizedException();
 
-    return this.signToken(user.id, user.email);
+    return this.signToken(user.id, user.email, user.name);
   }
 
-  private signToken(userId: string, email: string) {
+  private signToken(userId: string, email: string, name: string) {
     return {
       access_token: this.jwtService.sign({
         sub: userId,
         email,
+        name,
       }),
     };
   }
