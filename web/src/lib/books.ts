@@ -23,6 +23,12 @@ export type BackendLibraryItem = {
 
 export type BackendSingleLibraryItem = BackendLibraryItem;
 
+export type UpdateLibraryBookPayload = {
+  status?: string;
+  progress?: number;
+  progressUnit?: string;
+};
+
 function getToken() {
   if (typeof window === "undefined") {
     return null;
@@ -64,4 +70,32 @@ export async function getLibraryBook(
   bookId: string
 ): Promise<BackendSingleLibraryItem> {
   return fetchFromApi<BackendSingleLibraryItem>(`/books/${bookId}`);
+}
+
+export async function updateLibraryBook(
+  bookId: string,
+  payload: UpdateLibraryBookPayload,
+): Promise<BackendSingleLibraryItem> {
+  if (!API_URL) {
+    throw new Error("NEXT_PUBLIC_API_URL is missing.");
+  }
+
+  const token = getToken();
+
+  const res = await fetch(`${API_URL}/books/${bookId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    throw new Error(data?.message || "Failed to update book.");
+  }
+
+  return data as BackendSingleLibraryItem;
 }
