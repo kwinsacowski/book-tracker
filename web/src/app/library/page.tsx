@@ -74,7 +74,7 @@ export default function LibraryPage() {
 
   const shelfBooks: ShelfBook[] = useMemo(() => {
     return libraryItems.map((item, index) => ({
-      id: item.id ?? `${item.book.id}-${index}`,
+      id: item.book.id,
       title: item.book.title,
       author: item.book.author,
       coverColor: getColorFromStatus(item.status),

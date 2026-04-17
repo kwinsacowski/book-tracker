@@ -21,29 +21,52 @@ export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Get()
-  getMyLibrary(@CurrentUser() user: AuthUser) {
-    return this.booksService.findMyLibrary(user.id);
+  async getMyLibrary(@CurrentUser() user: AuthUser) {
+    const library = await this.booksService.findMyLibrary(user.id);
+    return library;
+  }
+
+  @Get(':bookId')
+  async getMyBook(
+    @Param('bookId') bookId: string,
+    @CurrentUser() user: AuthUser,
+  ) {
+    const book = await this.booksService.findMyBook(user.id, bookId);
+    return book;
   }
 
   @Post()
-  addToLibrary(@CurrentUser() user: AuthUser, @Body() dto: AddToLibraryDto) {
-    return this.booksService.addToLibrary(user.id, dto);
+  async addToLibrary(
+    @CurrentUser() user: AuthUser,
+    @Body() dto: AddToLibraryDto,
+  ) {
+    const book = await this.booksService.addToLibrary(user.id, dto);
+    return book;
   }
 
   @Patch(':bookId')
-  updateMyBook(
+  async updateMyBook(
     @Param('bookId') bookId: string,
     @Body() body: UpdateUserBookDto,
     @CurrentUser() user: AuthUser,
   ) {
-    return this.booksService.updateMyBook(user.id, bookId, body);
+    const updatedBook = await this.booksService.updateMyBook(
+      user.id,
+      bookId,
+      body,
+    );
+    return updatedBook;
   }
 
   @Delete(':bookId')
-  removeFromMyLibrary(
+  async removeFromMyLibrary(
     @Param('bookId') bookId: string,
     @CurrentUser() user: AuthUser,
   ) {
-    return this.booksService.removeFromMyLibrary(user.id, bookId);
+    const removedBook = await this.booksService.removeFromMyLibrary(
+      user.id,
+      bookId,
+    );
+    return removedBook;
   }
 }

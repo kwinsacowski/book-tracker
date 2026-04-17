@@ -26,6 +26,34 @@ type Book = {
   };
 };
 
+function calculateProgressPercent(
+  currentPage: number,
+  totalPages?: number | null,
+) {
+  if (!totalPages || totalPages <= 0) {
+    return 0;
+  }
+
+  return Math.min(Math.round((currentPage / totalPages) * 100), 100);
+}
+
+function formatStatus(status: string) {
+  switch (status) {
+    case "WANT_TO_READ":
+      return "Want to Read";
+    case "READING":
+      return "Reading";
+    case "COMPLETED":
+      return "Completed";
+    case "PAUSED":
+      return "Paused";
+    case "DNF":
+      return "DNF";
+    default:
+      return status;
+  }
+}
+
 export default function HomePage() {
   const [user, setUser] = useState<StoredUser | null>(null);
   const [books, setBooks] = useState<Book[]>([]);
@@ -178,42 +206,71 @@ export default function HomePage() {
           ) : (
             <ul className={styles.bookList}>
               {books.map((item) => {
-                const progressValue =
-                  item.progressUnit === "PERCENT"
-                    ? Math.min(item.progress, 100)
-                    : item.book.pageCount
-                      ? Math.min(
-                          (item.progress / item.book.pageCount) * 100,
-                          100,
-                        )
-                      : 0;
+                const currentPage = item.progress ?? 0;
+                const totalPages = item.book.pageCount ?? 0;
+                const progressPercent = calculateProgressPercent(
+                  currentPage,
+                  totalPages,
+                );
 
                 return (
-                  <li key={item.book.id} className={styles.bookCard}>
-                    <div className={styles.bookTop}>
-                      <div>
-                        <p className={styles.bookTitle}>{item.book.title}</p>
-                        <p className={styles.bookAuthor}>
-                          {item.book.author || "Author unknown"}
-                        </p>
+                  <li key={item.book.id}>
+                    <Link
+                      href={`/library/${item.book.id}`}
+                      style={{
+                        textDecoration: "none",
+                        color: "inherit",
+                        display: "block",
+                      }}
+                    >
+                      <div
+                        className={styles.bookCard}
+                        style={{
+                          transition:
+                            "transform 0.2s ease, box-shadow 0.2s ease",
+                          cursor: "pointer",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = "translateY(-6px)";
+                          e.currentTarget.style.boxShadow =
+                            "0 12px 24px rgba(0, 0, 0, 0.12)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = "translateY(0)";
+                          e.currentTarget.style.boxShadow = "";
+                        }}
+                      >
+                        <div className={styles.bookTop}>
+                          <div>
+                            <p className={styles.bookTitle}>{item.book.title}</p>
+                            <p className={styles.bookAuthor}>
+                              {item.book.author || "Author unknown"}
+                            </p>
+                          </div>
+
+                          <span className={styles.statusPill}>
+                            {formatStatus(item.status)}
+                          </span>
+                        </div>
+
+                        <div className={styles.progressRow}>
+                          <p className={styles.progressLabel}>
+                            {currentPage} / {totalPages} pages
+                          </p>
+
+                          <p className={styles.progressLabel}>
+                            {progressPercent}%
+                          </p>
+                        </div>
+
+                        <div className={styles.progressTrack}>
+                          <div
+                            className={styles.progressFill}
+                            style={{ width: `${progressPercent}%` }}
+                          />
+                        </div>
                       </div>
-
-                      <span className={styles.statusPill}>{item.status}</span>
-                    </div>
-
-                    <div className={styles.progressRow}>
-                      <p className={styles.progressLabel}>
-                        Progress: {item.progress}
-                        {item.progressUnit === "PERCENT" ? "%" : " pages"}
-                      </p>
-
-                      <div className={styles.progressTrack}>
-                        <div
-                          className={styles.progressFill}
-                          style={{ width: `${progressValue}%` }}
-                        />
-                      </div>
-                    </div>
+                    </Link>
                   </li>
                 );
               })}

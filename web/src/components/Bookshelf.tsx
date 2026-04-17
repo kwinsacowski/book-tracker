@@ -86,8 +86,9 @@ export default function Bookshelf({ books }: BookshelfProps) {
                     style={{ display: "flex", alignItems: "flex-end" }}
                   >
                     <BookSpine
+                      id={book.id}
                       title={book.title}
-                      author={book.author}
+                      author={book.author || "Unknown Author"}
                       color={book.coverColor || "#6f4e37"}
                       width={getBookWidth(index)}
                       height={getBookHeight(index)}

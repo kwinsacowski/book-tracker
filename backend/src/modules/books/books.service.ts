@@ -24,6 +24,26 @@ export class BooksService {
     });
   }
 
+  findMyBook(userId: string, bookId: string) {
+    return this.prisma.userBook.findUnique({
+      where: {
+        userId_bookId: {
+          userId,
+          bookId,
+        },
+      },
+      include: {
+        book: {
+          include: {
+            bookGenres: {
+              include: { genre: true },
+            },
+          },
+        },
+      },
+    });
+  }
+
   async addToLibrary(userId: string, dto: AddToLibraryDto) {
     const { genres, status, progress, progressUnit, ...bookData } = dto;
 

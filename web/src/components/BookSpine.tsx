@@ -1,16 +1,17 @@
-"use client";
+import Link from "next/link";
+import { motion } from "motion/react";
 
-import { motion } from "framer-motion";
-
-type BookSpineProps = {
+interface BookSpineProps {
+  id: string | number;
   title: string;
-  author?: string;
+  author: string;
   color?: string;
   height?: number;
   width?: number;
-};
+}
 
 export default function BookSpine({
+  id,
   title,
   author,
   color = "#6f4e37",
@@ -18,54 +19,35 @@ export default function BookSpine({
   width = 56,
 }: BookSpineProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35 }}
-      whileHover={{ y: -8 }}
+    <Link
+      href={`/library/${id}`}
       style={{
-        width: `${width}px`,
-        height: `${height}px`,
-        background: `linear-gradient(to right, ${color}, ${color})`,
-        color: "#fffaf3",
-        borderRadius: "8px 8px 0 0",
-        borderLeft: "1px solid rgba(255,255,255,0.18)",
-        borderRight: "1px solid rgba(0,0,0,0.18)",
-        boxShadow: "2px 4px 10px rgba(0,0,0,0.18)",
-        padding: "10px 6px",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        writingMode: "vertical-rl",
-        transform: "rotate(180deg)",
-        flexShrink: 0,
-        cursor: "pointer",
-        overflow: "hidden",
+        textDecoration: "none",
+        display: "inline-flex",
       }}
     >
-      <span
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -8 }}
         style={{
-          fontSize: "12px",
-          fontWeight: 700,
-          lineHeight: 1.1,
-          textAlign: "center",
+          width: `${width}px`,
+          height: `${height}px`,
+          background: color,
+          color: "#fffaf3",
+          borderRadius: "8px 8px 0 0",
+          padding: "10px 6px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          writingMode: "vertical-rl",
+          transform: "rotate(180deg)",
+          cursor: "pointer",
         }}
       >
-        {title}
-      </span>
-
-      {author ? (
-        <span
-          style={{
-            fontSize: "10px",
-            opacity: 0.8,
-            lineHeight: 1,
-            textAlign: "center",
-          }}
-        >
-          {author}
-        </span>
-      ) : null}
-    </motion.div>
+        <span>{title}</span>
+        {author && <span style={{ fontSize: "10px" }}>{author}</span>}
+      </motion.div>
+    </Link>
   );
 }
