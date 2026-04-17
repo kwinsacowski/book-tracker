@@ -71,6 +71,11 @@ export default function LibraryPage() {
                 Your saved books and current reading progress.
               </p>
             </div>
+            {loggedIn && (
+              <Link href="/add-book" className={styles.primaryBtn}>
+                + Add Book
+              </Link>
+            )}
           </div>
 
           {!loggedIn ? (

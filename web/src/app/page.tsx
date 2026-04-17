@@ -115,11 +115,15 @@ export default function HomePage() {
               View My Library
             </Link>
 
-            {!user ? (
+            {user ? (
+              <Link href="/add-book" className={styles.secondaryBtn}>
+                + Add Book
+              </Link>
+            ) : (
               <Link href="/register" className={styles.secondaryBtn}>
                 Start Your Shelf
               </Link>
-            ) : null}
+            )}
           </div>
 
           <div className={styles.statsRow}>
