@@ -4,7 +4,7 @@
   --surface: rgba(255, 252, 246, 0.78);
   --surface-strong: #fffaf2;
   --border: rgba(47, 62, 52, 0.12);
-  --shadow: 0 18px 45px rgba(31, 37, 32, 0.10);
+  --shadow: 0 18px 45px rgba(31, 37, 32, 0.1);
   --shadow-soft: 0 10px 28px rgba(31, 37, 32, 0.07);
 }
 
@@ -17,8 +17,16 @@ body {
 body {
   color: var(--foreground);
   background:
-    radial-gradient(circle at top left, rgba(194, 168, 120, 0.22), transparent 28%),
-    radial-gradient(circle at bottom right, rgba(95, 122, 97, 0.18), transparent 24%),
+    radial-gradient(
+      circle at top left,
+      rgba(194, 168, 120, 0.22),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(95, 122, 97, 0.18),
+      transparent 24%
+    ),
     linear-gradient(180deg, #f7f1e7 0%, #eee4d4 100%);
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;

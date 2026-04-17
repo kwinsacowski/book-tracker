@@ -7,12 +7,12 @@ import styles from "../../styles/home.module.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-type ReadingStatus = 
-    | "WANT_TO_READ"
-    | "READING"
-    | "PAUSED"
-    | "COMPLETED"
-    | "DNF";
+type ReadingStatus =
+  | "WANT_TO_READ"
+  | "READING"
+  | "PAUSED"
+  | "COMPLETED"
+  | "DNF";
 
 type ProgressUnit = "PERCENT" | "PAGES";
 
@@ -54,20 +54,20 @@ export default function AddBookPage() {
     }
 
     if (progressValue.trim() !== "") {
-      const progressNumber = Number(progressValue);
+      const progressNumber = Number(progressValue.trim());
+
+      if (Number.isNaN(progressNumber)) {
+        setError("Progress must be a number.");
+        return;
+      }
 
       if (progressNumber < 0) {
-        setError("Progress cannot be less than 0.");
+        setError("Current page cannot be less than 0.");
         return;
       }
 
-      if (progressUnit === "PAGES" && progressNumber > Number(pageCount)) {
+      if (progressNumber > Number(pageCount)) {
         setError("Current page cannot be greater than total page count.");
-        return;
-      }
-
-      if (progressUnit === "PERCENT" && progressNumber > 100) {
-        setError("Progress percentage cannot be greater than 100.");
         return;
       }
     }
@@ -76,9 +76,7 @@ export default function AddBookPage() {
       setIsSubmitting(true);
 
       const token =
-        typeof window !== "undefined"
-          ? localStorage.getItem("token")
-          : null;
+        typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
       const payload = {
         title: title.trim(),
@@ -89,7 +87,9 @@ export default function AddBookPage() {
         status,
         progressUnit,
         progress:
-          progressValue.trim() !== "" ? Number(progressValue.trim()) : undefined,
+          progressValue.trim() !== ""
+            ? Number(progressValue.trim())
+            : undefined,
       };
 
       const res = await fetch(`${API_URL}/books`, {
@@ -108,16 +108,7 @@ export default function AddBookPage() {
         return;
       }
 
-      setSuccess("Book added successfully.");
-
-      setTitle("");
-      setAuthor("");
-      setCoverUrl("");
-      setIsbn("");
-      setPageCount("");
-      setStatus("WANT_TO_READ");
-      setProgressValue("");
-
+      router.push("/library");
       router.refresh();
     } catch {
       setError("Something went wrong while adding the book.");
@@ -276,21 +267,15 @@ export default function AddBookPage() {
           </div>
 
           <div style={{ display: "grid", gap: "8px" }}>
-            <label htmlFor="progressValue">
-              Current Page
-            </label>
+            <label htmlFor="progressValue">Current Page</label>
             <input
               id="progressValue"
               type="number"
               min="0"
-              max={progressUnit === "PAGES" ? pageCount || undefined : 100}
+              max={pageCount}
               value={progressValue}
               onChange={(e) => setProgressValue(e.target.value)}
-              placeholder={
-                progressUnit === "PAGES"
-                  ? "Enter current page"
-                  : "Enter percent complete"
-              }
+              placeholder="Enter current page"
               style={{
                 height: "44px",
                 padding: "0 14px",

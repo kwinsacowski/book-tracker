@@ -1,8 +1,9 @@
-import { IsInt, IsOptional, IsString, Min } from 'class-validator';
+import { ProgressUnit, ReadingStatus } from '@prisma/client';
+import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
 
 export class AddToLibraryDto {
   @IsString()
-  title: string;
+  title!: string;
 
   @IsOptional()
   @IsString()
@@ -10,7 +11,7 @@ export class AddToLibraryDto {
 
   @IsInt()
   @Min(1)
-  pageCount: number;
+  pageCount!: number;
 
   @IsOptional()
   @IsString()
@@ -23,4 +24,17 @@ export class AddToLibraryDto {
   @IsOptional()
   @IsString({ each: true })
   genres?: string[];
+
+  @IsOptional()
+  @IsEnum(ReadingStatus)
+  status?: ReadingStatus;
+
+  @IsOptional()
+  @IsEnum(ProgressUnit)
+  progressUnit?: ProgressUnit;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  progress?: number;
 }

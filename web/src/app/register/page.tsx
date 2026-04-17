@@ -108,7 +108,7 @@ export default function RegisterPage() {
     } finally {
       setIsSubmitting(false);
     }
-      router.refresh();
+    router.refresh();
   }
 
   return (

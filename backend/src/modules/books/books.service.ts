@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ProgressUnit, ReadingStatus } from '@prisma/client';
 import { PrismaService } from '../../common/prisma/prisma.service';
 import { AddToLibraryDto } from './dto/add-to-library.dto';
 import { UpdateUserBookDto } from './dto/update-userbook.dto';
@@ -7,9 +8,9 @@ import { UpdateUserBookDto } from './dto/update-userbook.dto';
 export class BooksService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findMyLibrary() {
+  findMyLibrary(userId: string) {
     return this.prisma.userBook.findMany({
-      // where: { userId },
+      where: { userId },
       orderBy: { updatedAt: 'desc' },
       include: {
         book: {
@@ -24,10 +25,9 @@ export class BooksService {
   }
 
   async addToLibrary(userId: string, dto: AddToLibraryDto) {
-    const { genres, ...bookData } = dto;
+    const { genres, status, progress, progressUnit, ...bookData } = dto;
 
     return this.prisma.$transaction(async (tx) => {
-      // If ISBN provided, try to reuse an existing Book
       const existing =
         bookData.isbn != null
           ? await tx.book.findFirst({ where: { isbn: bookData.isbn } })
@@ -53,7 +53,6 @@ export class BooksService {
           },
         }));
 
-      // Avoid duplicate UserBook with upsert using compound unique
       return tx.userBook.upsert({
         where: {
           userId_bookId: {
@@ -62,11 +61,16 @@ export class BooksService {
           },
         },
         update: {
-          // if they “add again”, just bump updatedAt
+          status: status ?? ReadingStatus.WANT_TO_READ,
+          progress: progress ?? 0,
+          progressUnit: progressUnit ?? ProgressUnit.PAGES,
         },
         create: {
           userId,
           bookId: book.id,
+          status: status ?? ReadingStatus.WANT_TO_READ,
+          progress: progress ?? 0,
+          progressUnit: progressUnit ?? ProgressUnit.PAGES,
         },
         include: {
           book: {
@@ -79,7 +83,6 @@ export class BooksService {
     });
   }
 
-  // Update my reading status / progress
   updateMyBook(userId: string, bookId: string, dto: UpdateUserBookDto) {
     return this.prisma.userBook.update({
       where: {
@@ -96,7 +99,6 @@ export class BooksService {
     });
   }
 
-  // Remove from my library
   removeFromMyLibrary(userId: string, bookId: string) {
     return this.prisma.userBook.delete({
       where: {

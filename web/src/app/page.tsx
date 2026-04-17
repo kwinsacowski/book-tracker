@@ -4,7 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { APP_NAME, APP_TAGLINE } from "@/config/app";
-import { getDisplayName, getStoredUser, getToken, type StoredUser } from "../lib/auth";
+import {
+  getDisplayName,
+  getStoredUser,
+  getToken,
+  type StoredUser,
+} from "../lib/auth";
 import styles from "../styles/home.module.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -27,53 +32,53 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-  async function syncDashboard() {
-    const storedUser = getStoredUser();
-    const token = getToken();
+    async function syncDashboard() {
+      const storedUser = getStoredUser();
+      const token = getToken();
 
-    setUser(storedUser);
+      setUser(storedUser);
 
-    if (!token || !API_URL) {
-      setBooks([]);
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const response = await fetch(`${API_URL}/books`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        cache: "no-store",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to load books.");
+      if (!token || !API_URL) {
+        setBooks([]);
+        setIsLoading(false);
+        return;
       }
 
-      const data = (await response.json()) as Book[];
-      setBooks(data);
-    } catch {
-      setBooks([]);
-    } finally {
-      setIsLoading(false);
+      setIsLoading(true);
+
+      try {
+        const response = await fetch(`${API_URL}/books`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load books.");
+        }
+
+        const data = (await response.json()) as Book[];
+        setBooks(data);
+      } catch {
+        setBooks([]);
+      } finally {
+        setIsLoading(false);
+      }
     }
-  }
 
-  void syncDashboard();
-
-  function handleAuthChange() {
     void syncDashboard();
-  }
 
-  window.addEventListener("auth-change", handleAuthChange);
+    function handleAuthChange() {
+      void syncDashboard();
+    }
 
-  return () => {
-    window.removeEventListener("auth-change", handleAuthChange);
-  };
-}, []);
+    window.addEventListener("auth-change", handleAuthChange);
+
+    return () => {
+      window.removeEventListener("auth-change", handleAuthChange);
+    };
+  }, []);
 
   const totalBooks = books.length;
   const readingNow = books.filter((item) => item.status === "READING").length;
@@ -167,8 +172,8 @@ export default function HomePage() {
             <div className={styles.emptyState}>Loading your shelf...</div>
           ) : books.length === 0 ? (
             <div className={styles.emptyState}>
-              Your shelf is empty right now. Once books are added, they’ll appear
-              here as beautifully organized reading cards.
+              Your shelf is empty right now. Once books are added, they’ll
+              appear here as beautifully organized reading cards.
             </div>
           ) : (
             <ul className={styles.bookList}>
@@ -177,7 +182,10 @@ export default function HomePage() {
                   item.progressUnit === "PERCENT"
                     ? Math.min(item.progress, 100)
                     : item.book.pageCount
-                      ? Math.min((item.progress / item.book.pageCount) * 100, 100)
+                      ? Math.min(
+                          (item.progress / item.book.pageCount) * 100,
+                          100,
+                        )
                       : 0;
 
                 return (

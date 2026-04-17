@@ -70,7 +70,9 @@
   background: rgba(255, 250, 242, 0.78);
   color: #1f2520;
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
     transform 0.2s ease;
 }
 
@@ -89,7 +91,9 @@
   font-weight: 700;
   cursor: pointer;
   box-shadow: var(--shadow-soft);
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
 }
 
 .primaryButton:hover {

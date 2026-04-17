@@ -6,28 +6,28 @@ import {
   Param,
   Patch,
   Post,
-  // UseGuards
+  UseGuards,
 } from '@nestjs/common';
-// import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import type { AuthUser } from '../auth/current-user.decorator';
 import { CurrentUser } from '../auth/current-user.decorator';
+import type { AuthUser } from '../auth/current-user.decorator';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { BooksService } from './books.service';
 import { AddToLibraryDto } from './dto/add-to-library.dto';
 import { UpdateUserBookDto } from './dto/update-userbook.dto';
 
 @Controller('books')
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Get()
-  findMyLibrary() {
-    return this.booksService.findMyLibrary();
+  getMyLibrary(@CurrentUser() user: AuthUser) {
+    return this.booksService.findMyLibrary(user.id);
   }
 
   @Post()
-  addToLibrary(@Body() body: AddToLibraryDto, @CurrentUser() user: AuthUser) {
-    return this.booksService.addToLibrary(user.id, body);
+  addToLibrary(@CurrentUser() user: AuthUser, @Body() dto: AddToLibraryDto) {
+    return this.booksService.addToLibrary(user.id, dto);
   }
 
   @Patch(':bookId')
