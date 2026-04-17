@@ -3,7 +3,7 @@
 import { APP_NAME, THEME } from "@/config/app";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getToken } from "../lib/auth";
+import { getToken } from "../../lib/auth";
 import styles from "../home.module.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;

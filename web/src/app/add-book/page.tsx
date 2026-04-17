@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { APP_NAME, APP_TAGLINE } from "@/config/app";
-import styles from "./page.module.css";
+import styles from "../../styles/home.module.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 

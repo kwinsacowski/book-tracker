@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { getStoredUser, setStoredUser, setToken } from "../lib/auth";
+import { getStoredUser, setStoredUser, setToken } from "../../lib/auth";
 import styles from "../register/register.module.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;

@@ -4,8 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { APP_NAME, APP_TAGLINE } from "@/config/app";
-import { getDisplayName, getStoredUser, getToken, type StoredUser } from "./lib/auth";
-import styles from "./home.module.css";
+import { getDisplayName, getStoredUser, getToken, type StoredUser } from "../lib/auth";
+import styles from "../styles/home.module.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
