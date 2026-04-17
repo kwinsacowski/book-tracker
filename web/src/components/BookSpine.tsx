@@ -8,6 +8,7 @@ interface BookSpineProps {
   color?: string;
   height?: number;
   width?: number;
+  isNew?: boolean;
 }
 
 export default function BookSpine({
@@ -17,6 +18,7 @@ export default function BookSpine({
   color = "#6f4e37",
   height = 180,
   width = 56,
+  isNew = false,
 }: BookSpineProps) {
   return (
     <Link
@@ -27,8 +29,17 @@ export default function BookSpine({
       }}
     >
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={
+          isNew
+            ? { opacity: 0, y: -160, rotate: -12, scale: 1.05 }
+            : { opacity: 0, y: 24 }
+        }
+        animate={{ opacity: 1, y: 0, rotate: 0, scale: 1 }}
+        transition={
+          isNew
+            ? { type: "spring", stiffness: 180, damping: 16 }
+            : { duration: 0.35 }
+        }
         whileHover={{ y: -8 }}
         style={{
           width: `${width}px`,

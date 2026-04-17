@@ -12,6 +12,7 @@ export type ShelfBook = {
 
 type BookshelfProps = {
   books: ShelfBook[];
+  newlyAddedBookId?: string | null;
 };
 
 const BOOKS_PER_SHELF = 8;
@@ -36,7 +37,7 @@ function getBookHeight(index: number) {
   return heights[index % heights.length];
 }
 
-export default function Bookshelf({ books }: BookshelfProps) {
+export default function Bookshelf({ books, newlyAddedBookId }: BookshelfProps) {
   const shelves = chunkBooks(books, BOOKS_PER_SHELF);
 
   if (books.length === 0) {
@@ -92,6 +93,7 @@ export default function Bookshelf({ books }: BookshelfProps) {
                       color={book.coverColor || "#6f4e37"}
                       width={getBookWidth(index)}
                       height={getBookHeight(index)}
+                      isNew={book.id === newlyAddedBookId}
                     />
                   </motion.div>
                 ))}

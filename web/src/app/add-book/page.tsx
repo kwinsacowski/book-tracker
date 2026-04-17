@@ -108,6 +108,12 @@ export default function AddBookPage() {
         return;
       }
 
+      const addedBookId = data?.book?.id ?? data?.bookId ?? data?.id ??  null;
+
+      if (addedBookId) {
+        sessionStorage.setItem("newlyAddedBookId", addedBookId);
+      }
+
       router.push("/library");
       router.refresh();
     } catch {

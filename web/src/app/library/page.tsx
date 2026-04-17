@@ -25,6 +25,7 @@ export default function LibraryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [newlyAddedBookId, setNewlyAddedBookId] = useState<string | null>(null);
 
   useEffect(() => {
     const token =
@@ -37,6 +38,9 @@ export default function LibraryPage() {
       setError("");
       return;
     }
+
+    const storedNewBookId = sessionStorage.getItem("newlyAddedBookId");
+    setNewlyAddedBookId(storedNewBookId);
 
     setIsLoggedIn(true);
 
@@ -71,6 +75,19 @@ export default function LibraryPage() {
       isMounted = false;
     };
   }, []);
+
+  useEffect(() => {
+  if (!newlyAddedBookId) {
+    return;
+  }
+
+  const timeout = window.setTimeout(() => {
+    sessionStorage.removeItem("newlyAddedBookId");
+    setNewlyAddedBookId(null);
+  }, 1800);
+
+  return () => window.clearTimeout(timeout);
+}, [newlyAddedBookId]);
 
   const shelfBooks: ShelfBook[] = useMemo(() => {
     return libraryItems.map((item, index) => ({
@@ -206,7 +223,7 @@ export default function LibraryPage() {
       ) : error ? (
         <div style={{ color: "#b42318" }}>{error}</div>
       ) : (
-        <Bookshelf books={shelfBooks} />
+        <Bookshelf books={shelfBooks} newlyAddedBookId={newlyAddedBookId}  />
       )}
     </main>
   );
