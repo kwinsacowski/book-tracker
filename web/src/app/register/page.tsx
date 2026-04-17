@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "../../styles/register.module.css";
-import { storeAuth } from "../../../lib/auth";
+import { storeAuth } from "../../lib/auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -93,7 +93,7 @@ export default function RegisterPage() {
         "user",
         JSON.stringify({
           email,
-          name: name.trim(),
+          name: name.trim().replace(/\s+/g, " "),
         }),
       );
 

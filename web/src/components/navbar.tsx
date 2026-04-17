@@ -59,6 +59,7 @@ export default function NavBar() {
     window.dispatchEvent(new Event("auth-change"));
     router.push("/");
     router.refresh();
+    
   }
 
   return (

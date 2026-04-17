@@ -56,12 +56,17 @@ export default function LoginPage() {
 
       setToken(data.access_token);
 
-      const existingUser = getStoredUser();
+      const meResponse = await fetch(`${API_URL}/users/me`, {
+        headers: {
+          Authorization: `Bearer ${data.access_token}`,
+        },
+      });
+
+      const meData = await meResponse.json().catch(() => null);
 
       setStoredUser({
-        id: data.user?.id ?? existingUser?.id,
-        email: data.user?.email ?? email,
-        name: data.user?.name,
+        email: meData?.email ?? data.user?.email ?? email,
+        name: meData?.name?.trim(),
       });
 
       window.dispatchEvent(new Event("auth-change"));
