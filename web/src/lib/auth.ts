@@ -47,7 +47,9 @@ export function isLoggedIn(): boolean {
 
 export function getDisplayName(user: StoredUser | null): string {
   if (!user) return "Reader";
-  if (user.name && user.name.trim().length > 0) return user.name.trim();
+  if (user.name && user.name.trim()) {
+    return user.name.trim().split(" ")[0]; // 👈 only first name
+  }
 
   const emailPrefix = user.email.split("@")[0];
   return emailPrefix || "Reader";

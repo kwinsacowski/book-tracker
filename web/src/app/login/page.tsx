@@ -64,6 +64,8 @@ export default function LoginPage() {
         name: data.user?.name,
       });
 
+      window.dispatchEvent(new Event("auth-change"));
+
       router.push("/");
       router.refresh();
     } catch (err) {

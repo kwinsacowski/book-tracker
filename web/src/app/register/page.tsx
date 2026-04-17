@@ -86,10 +86,7 @@ export default function RegisterPage() {
       }
 
       // 3. Save token
-      storeAuth(loginData.access_token, {
-        name,
-        email,
-      });
+      localStorage.setItem("token", loginData.access_token);
 
       // optional: save light user info too
       localStorage.setItem(
@@ -100,6 +97,8 @@ export default function RegisterPage() {
         }),
       );
 
+      window.dispatchEvent(new Event("auth-change"));
+
       // 4. Redirect
       router.push("/");
     } catch (err) {
@@ -109,6 +108,7 @@ export default function RegisterPage() {
     } finally {
       setIsSubmitting(false);
     }
+      router.refresh();
   }
 
   return (

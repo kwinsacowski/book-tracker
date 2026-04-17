@@ -2,31 +2,61 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { APP_NAME, APP_TAGLINE } from "@/config/app";
 import {
   clearAuth,
   getDisplayName,
   getStoredUser,
   isLoggedIn,
-} from "../lib/auth";
+} from "@/lib/auth";
 import styles from "./navbar.module.css";
+
+function getAuthSnapshot(): string {
+  const user = getStoredUser();
+
+  return JSON.stringify({
+    loggedIn: isLoggedIn(),
+    displayName: getDisplayName(user),
+  });
+}
+
+function getServerSnapshot(): string {
+  return JSON.stringify({
+    loggedIn: false,
+    displayName: "",
+  });
+}
+
+function subscribe(callback: () => void) {
+  const handler = () => callback();
+
+  window.addEventListener("storage", handler);
+  window.addEventListener("auth-change", handler);
+
+  return () => {
+    window.removeEventListener("storage", handler);
+    window.removeEventListener("auth-change", handler);
+  };
+}
 
 export default function NavBar() {
   const router = useRouter();
 
-  const [mounted, setMounted] = useState(false);
+  const snapshot = useSyncExternalStore(
+    subscribe,
+    getAuthSnapshot,
+    getServerSnapshot,
+  );
 
-  const user = getStoredUser();
-  const loggedIn = isLoggedIn();
-  const displayName = getDisplayName(user);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const { loggedIn, displayName } = JSON.parse(snapshot) as {
+    loggedIn: boolean;
+    displayName: string;
+  };
 
   function handleLogout() {
     clearAuth();
+    window.dispatchEvent(new Event("auth-change"));
     router.push("/");
     router.refresh();
   }
@@ -39,7 +69,7 @@ export default function NavBar() {
           <h2 className={styles.brand}>{APP_NAME}</h2>
           <p className={styles.tagline}>{APP_TAGLINE}</p>
 
-          {mounted && loggedIn ? (
+          {loggedIn ? (
             <div className={styles.userBadge}>Signed in as {displayName}</div>
           ) : null}
         </div>
@@ -54,7 +84,7 @@ export default function NavBar() {
               <Link href="/library">Library</Link>
             </li>
 
-            {mounted && !loggedIn ? (
+            {!loggedIn ? (
               <>
                 <li className={styles.navItem}>
                   <Link href="/login">Login</Link>
@@ -63,7 +93,7 @@ export default function NavBar() {
                   <Link href="/register">Register</Link>
                 </li>
               </>
-            ) : mounted && loggedIn ? (
+            ) : (
               <li className={styles.navItem}>
                 <button
                   type="button"
@@ -73,7 +103,7 @@ export default function NavBar() {
                   Log Out
                 </button>
               </li>
-            ) : null}
+            )}
           </ul>
         </nav>
       </div>
