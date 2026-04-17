@@ -4,7 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getStoredUser, setStoredUser, setToken } from "../../lib/auth";
-import styles from "../register/register.module.css";
+import styles from "../../styles/register.module.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -59,8 +59,9 @@ export default function LoginPage() {
       const existingUser = getStoredUser();
 
       setStoredUser({
-        email,
-        name: existingUser?.name,
+        id: data.user?.id ?? existingUser?.id,
+        email: data.user?.email ?? email,
+        name: data.user?.name ?? existingUser?.name ?? "",
       });
 
       router.push("/");

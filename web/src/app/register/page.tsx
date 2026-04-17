@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./register.module.css";
+import { storeAuth } from "../../../lib/auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -73,7 +74,10 @@ export default function RegisterPage() {
       }
 
       // 3. Save token
-      localStorage.setItem("token", loginData.access_token);
+      storeAuth(loginData.access_token, {
+        name,
+        email,
+      });
 
       // optional: save light user info too
       localStorage.setItem(
