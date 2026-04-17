@@ -34,7 +34,7 @@ Status: Complete
 Phase 2 complete means: unit + e2e tests passing locally and test DB reset workflow configured.
 ---
 
-## Phase 3: Web Application (Next.js) (Next Phase)
+## Phase 3: Web Application (Next.js) 
 
 Goals:
 - Set up Next.js frontend
@@ -45,7 +45,7 @@ Goals:
 - Add component tests for key UI components
 - Add basic integration tests for authenticated flows
 
-Status: Pending
+Status: In Progress
 
 ---
 
