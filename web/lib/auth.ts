@@ -33,7 +33,7 @@ export function getDisplayName(user: StoredUser | null): string {
   if (!user) return "";
 
   if (user.name && user.name.trim()) {
-    return user.name;
+    return user.name.trim().split(" ")[0]; // return first name
   }
 
   return user.email;

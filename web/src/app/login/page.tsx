@@ -61,7 +61,7 @@ export default function LoginPage() {
       setStoredUser({
         id: data.user?.id ?? existingUser?.id,
         email: data.user?.email ?? email,
-        name: data.user?.name ?? existingUser?.name ?? "",
+        name: data.user?.name,
       });
 
       router.push("/");

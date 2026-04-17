@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import styles from "./register.module.css";
+import styles from "../../styles/register.module.css";
 import { storeAuth } from "../../../lib/auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -22,6 +22,18 @@ export default function RegisterPage() {
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
+
+    if (!name.trim()) {
+      setError("Name is required.");
+      return;
+    }
+
+    const parts = name.trim().split(" ");
+
+    if (parts.length < 2) {
+      setError("Please enter both first and last name.");
+      return;
+    }
 
     if (!API_URL) {
       setError("NEXT_PUBLIC_API_URL is missing.");
@@ -84,7 +96,7 @@ export default function RegisterPage() {
         "user",
         JSON.stringify({
           email,
-          name,
+          name: name.trim(),
         }),
       );
 
