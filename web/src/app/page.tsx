@@ -27,41 +27,53 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+  async function syncDashboard() {
     const storedUser = getStoredUser();
     const token = getToken();
 
     setUser(storedUser);
 
-    async function loadBooks() {
-      if (!token || !API_URL) {
-        setBooks([]);
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const response = await fetch(`${API_URL}/books`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          cache: "no-store",
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to load books.");
-        }
-
-        const data = (await response.json()) as Book[];
-        setBooks(data);
-      } catch {
-        setBooks([]);
-      } finally {
-        setIsLoading(false);
-      }
+    if (!token || !API_URL) {
+      setBooks([]);
+      setIsLoading(false);
+      return;
     }
 
-    void loadBooks();
-  }, []);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(`${API_URL}/books`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to load books.");
+      }
+
+      const data = (await response.json()) as Book[];
+      setBooks(data);
+    } catch {
+      setBooks([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  void syncDashboard();
+
+  function handleAuthChange() {
+    void syncDashboard();
+  }
+
+  window.addEventListener("auth-change", handleAuthChange);
+
+  return () => {
+    window.removeEventListener("auth-change", handleAuthChange);
+  };
+}, []);
 
   const totalBooks = books.length;
   const readingNow = books.filter((item) => item.status === "READING").length;
