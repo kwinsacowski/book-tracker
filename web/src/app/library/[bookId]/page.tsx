@@ -50,6 +50,15 @@ export default function SingleBookPage() {
   const [saveError, setSaveError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
+  const [category, setCategory] = useState("");
+  const [seriesOrder, setSeriesOrder] = useState("");
+  const [standaloneOrSeries, setStandaloneOrSeries] = useState("");
+  const [seriesStatus, setSeriesStatus] = useState("");
+  const [tropes, setTropes] = useState("");
+  const [spiceLevel, setSpiceLevel] = useState("");
+  const [rating, setRating] = useState("");
+  const [audiobookAvailable, setAudiobookAvailable] = useState("");
+
   useEffect(() => {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -137,6 +146,14 @@ export default function SingleBookPage() {
         status,
         progressUnit,
         progress: nextProgress,
+        category: category || undefined,
+        seriesOrder: seriesOrder ? Number(seriesOrder) : undefined,
+        standaloneOrSeries: standaloneOrSeries || undefined,
+        seriesStatus: seriesStatus || undefined,
+        tropes: tropes.trim() || undefined,
+        spiceLevel: spiceLevel || undefined,
+        rating: rating ? Number(rating) : undefined,
+        audiobookAvailable: audiobookAvailable || undefined,
       });
 
       setItem(updated);
@@ -340,6 +357,41 @@ export default function SingleBookPage() {
                 <StatCard label="Current Page" value={String(currentPage)} />
                 <StatCard label="Total Pages" value={String(totalPages)} />
                 <StatCard label="Progress" value={`${calculatedPercent}%`} />
+
+                {item.category ? (
+                  <StatCard label="Category" value={item.category} />
+                ) : null}
+
+                {item.seriesOrder ? (
+                  <StatCard label="Series Order" value={String(item.seriesOrder)} />
+                ) : null}
+
+                {item.standaloneOrSeries ? (
+                  <StatCard label="Format" value={item.standaloneOrSeries} />
+                ) : null}
+
+                {item.seriesStatus ? (
+                  <StatCard label="Series Status" value={item.seriesStatus} />
+                ) : null}
+
+                {item.spiceLevel ? (
+                  <StatCard label="Spice Level" value={item.spiceLevel} />
+                ) : null}
+
+                {item.rating ? (
+                  <StatCard label="Rating" value={`${item.rating}/5`} />
+                ) : null}
+
+                {item.audiobookAvailable ? (
+                  <StatCard label="Audiobook" value={item.audiobookAvailable} />
+                ) : null}
+
+                {item.tropes ? (
+                  <div style={{ display: "grid", gap: "4px" }}>
+                    <strong style={{ color: "#4b2e1f" }}>Tropes</strong>
+                    <span style={{ color: "#6b5748" }}>{item.tropes}</span>
+                  </div>
+                ) : null}
               </div>
 
               <div style={{ display: "grid", gap: "8px" }}>

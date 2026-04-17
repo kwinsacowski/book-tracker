@@ -45,7 +45,21 @@ export class BooksService {
   }
 
   async addToLibrary(userId: string, dto: AddToLibraryDto) {
-    const { genres, status, progress, progressUnit, ...bookData } = dto;
+    const {
+      genres,
+      status,
+      progress,
+      progressUnit,
+      category,
+      seriesOrder,
+      standaloneOrSeries,
+      seriesStatus,
+      tropes,
+      spiceLevel,
+      rating,
+      audiobookAvailable,
+      ...bookData
+    } = dto;
 
     return this.prisma.$transaction(async (tx) => {
       const existing =
@@ -84,6 +98,14 @@ export class BooksService {
           status: status ?? ReadingStatus.WANT_TO_READ,
           progress: progress ?? 0,
           progressUnit: progressUnit ?? ProgressUnit.PAGES,
+          category: category ?? null,
+          seriesOrder: seriesOrder ?? null,
+          standaloneOrSeries: standaloneOrSeries ?? null,
+          seriesStatus: seriesStatus ?? null,
+          tropes: tropes ?? null,
+          spiceLevel: spiceLevel ?? null,
+          rating: rating ?? null,
+          audiobookAvailable: audiobookAvailable ?? null,
         },
         create: {
           userId,
@@ -91,6 +113,14 @@ export class BooksService {
           status: status ?? ReadingStatus.WANT_TO_READ,
           progress: progress ?? 0,
           progressUnit: progressUnit ?? ProgressUnit.PAGES,
+          category: category ?? null,
+          seriesOrder: seriesOrder ?? null,
+          standaloneOrSeries: standaloneOrSeries ?? null,
+          seriesStatus: seriesStatus ?? null,
+          tropes: tropes ?? null,
+          spiceLevel: spiceLevel ?? null,
+          rating: rating ?? null,
+          audiobookAvailable: audiobookAvailable ?? null,
         },
         include: {
           book: {

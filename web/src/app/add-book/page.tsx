@@ -33,6 +33,15 @@ export default function AddBookPage() {
   const [success, setSuccess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [category, setCategory] = useState("");
+  const [seriesOrder, setSeriesOrder] = useState("");
+  const [standaloneOrSeries, setStandaloneOrSeries] = useState("");
+  const [seriesStatus, setSeriesStatus] = useState("");
+  const [tropes, setTropes] = useState("");
+  const [spiceLevel, setSpiceLevel] = useState("");
+  const [rating, setRating] = useState("");
+  const [audiobookAvailable, setAudiobookAvailable] = useState("");
+
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
@@ -87,9 +96,15 @@ export default function AddBookPage() {
         status,
         progressUnit,
         progress:
-          progressValue.trim() !== ""
-            ? Number(progressValue.trim())
-            : undefined,
+          progressValue.trim() !== "" ? Number(progressValue.trim()) : undefined,
+        category: category || undefined,
+        seriesOrder: seriesOrder ? Number(seriesOrder) : undefined,
+        standaloneOrSeries: standaloneOrSeries || undefined,
+        seriesStatus: seriesStatus || undefined,
+        tropes: tropes.trim() || undefined,
+        spiceLevel: spiceLevel || undefined,
+        rating: rating ? Number(rating) : undefined,
+        audiobookAvailable: audiobookAvailable || undefined,
       };
 
       const res = await fetch(`${API_URL}/books`, {
@@ -289,6 +304,171 @@ export default function AddBookPage() {
                 border: "1px solid #d9d9d9",
               }}
             />
+          </div>
+
+          <div style={{ display: "grid", gap: "16px" }}>
+            <h2 style={{ margin: 0, color: "#4b2e1f" }}>Optional Tracking Fields</h2>
+
+            <div style={{ display: "grid", gap: "8px" }}>
+              <label htmlFor="category">Category</label>
+              <select
+                id="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                style={{
+                  height: "44px",
+                  padding: "0 14px",
+                  borderRadius: "12px",
+                  border: "1px solid #d9d9d9",
+                }}
+              >
+                <option value="">Select category</option>
+                <option value="ROMANCE">Romance</option>
+                <option value="FANTASY">Fantasy</option>
+                <option value="DARK_ROMANCE">Dark Romance</option>
+                <option value="PARANORMAL">Paranormal</option>
+                <option value="SCI_FI">Sci-Fi</option>
+                <option value="THRILLER">Thriller</option>
+                <option value="MYSTERY">Mystery</option>
+                <option value="HISTORICAL_ROMANCE">Historical Romance</option>
+                <option value="CONTEMPORARY_ROMANCE">Contemporary Romance</option>
+                <option value="YOUNG_ADULT">Young Adult</option>
+                <option value="NEW_ADULT">New Adult</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+
+            <div style={{ display: "grid", gap: "8px" }}>
+              <label htmlFor="seriesOrder">Series Order</label>
+              <input
+                id="seriesOrder"
+                type="number"
+                min="1"
+                value={seriesOrder}
+                onChange={(e) => setSeriesOrder(e.target.value)}
+                style={{
+                  height: "44px",
+                  padding: "0 14px",
+                  borderRadius: "12px",
+                  border: "1px solid #d9d9d9",
+                }}
+              />
+            </div>
+
+            <div style={{ display: "grid", gap: "8px" }}>
+              <label htmlFor="standaloneOrSeries">Standalone or Series</label>
+              <select
+                id="standaloneOrSeries"
+                value={standaloneOrSeries}
+                onChange={(e) => setStandaloneOrSeries(e.target.value)}
+                style={{
+                  height: "44px",
+                  padding: "0 14px",
+                  borderRadius: "12px",
+                  border: "1px solid #d9d9d9",
+                }}
+              >
+                <option value="">Select format</option>
+                <option value="STANDALONE">Standalone</option>
+                <option value="SERIES">Series</option>
+              </select>
+            </div>
+
+            <div style={{ display: "grid", gap: "8px" }}>
+              <label htmlFor="seriesStatus">Series Status</label>
+              <select
+                id="seriesStatus"
+                value={seriesStatus}
+                onChange={(e) => setSeriesStatus(e.target.value)}
+                style={{
+                  height: "44px",
+                  padding: "0 14px",
+                  borderRadius: "12px",
+                  border: "1px solid #d9d9d9",
+                }}
+              >
+                <option value="">Select series status</option>
+                <option value="COMPLETE">Complete</option>
+                <option value="ONGOING">Ongoing</option>
+                <option value="UNKNOWN">Unknown</option>
+              </select>
+            </div>
+
+            <div style={{ display: "grid", gap: "8px" }}>
+              <label htmlFor="tropes">Tropes</label>
+              <input
+                id="tropes"
+                value={tropes}
+                onChange={(e) => setTropes(e.target.value)}
+                placeholder="Enemies to Lovers, Fated Mates"
+                style={{
+                  height: "44px",
+                  padding: "0 14px",
+                  borderRadius: "12px",
+                  border: "1px solid #d9d9d9",
+                }}
+              />
+            </div>
+
+            <div style={{ display: "grid", gap: "8px" }}>
+              <label htmlFor="spiceLevel">Spice Level</label>
+              <select
+                id="spiceLevel"
+                value={spiceLevel}
+                onChange={(e) => setSpiceLevel(e.target.value)}
+                style={{
+                  height: "44px",
+                  padding: "0 14px",
+                  borderRadius: "12px",
+                  border: "1px solid #d9d9d9",
+                }}
+              >
+                <option value="">Select spice level</option>
+                <option value="NONE">None</option>
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+                <option value="VERY_HIGH">Very High</option>
+              </select>
+            </div>
+
+            <div style={{ display: "grid", gap: "8px" }}>
+              <label htmlFor="rating">Rating</label>
+              <input
+                id="rating"
+                type="number"
+                min="1"
+                max="5"
+                value={rating}
+                onChange={(e) => setRating(e.target.value)}
+                style={{
+                  height: "44px",
+                  padding: "0 14px",
+                  borderRadius: "12px",
+                  border: "1px solid #d9d9d9",
+                }}
+              />
+            </div>
+
+            <div style={{ display: "grid", gap: "8px" }}>
+              <label htmlFor="audiobookAvailable">Audiobook Availability</label>
+              <select
+                id="audiobookAvailable"
+                value={audiobookAvailable}
+                onChange={(e) => setAudiobookAvailable(e.target.value)}
+                style={{
+                  height: "44px",
+                  padding: "0 14px",
+                  borderRadius: "12px",
+                  border: "1px solid #d9d9d9",
+                }}
+              >
+                <option value="">Select audiobook status</option>
+                <option value="YES">Yes</option>
+                <option value="NO">No</option>
+                <option value="UNKNOWN">Unknown</option>
+              </select>
+            </div>
           </div>
 
           {error ? (

@@ -5,6 +5,14 @@ export type BackendLibraryItem = {
   status: string;
   progress?: number;
   progressUnit?: string;
+  category?: string;
+  seriesOrder?: number;
+  standaloneOrSeries?: string;
+  seriesStatus?: string;
+  tropes?: string;
+  spiceLevel?: string;
+  rating?: number;
+  audiobookAvailable?: string;
   book: {
     id: string;
     title: string;
@@ -27,6 +35,14 @@ export type UpdateLibraryBookPayload = {
   status?: string;
   progress?: number;
   progressUnit?: string;
+  category?: string;
+  seriesOrder?: number;
+  standaloneOrSeries?: string;
+  seriesStatus?: string;
+  tropes?: string;
+  spiceLevel?: string;
+  rating?: number;
+  audiobookAvailable?: string;
 };
 
 function getToken() {

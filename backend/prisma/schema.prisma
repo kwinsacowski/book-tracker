@@ -7,27 +7,27 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(uuid())
-  email     String     @unique
-  password  String
-  name      String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  userBooks UserBook[]
+  id                  String     @id @default(uuid())
+  email               String     @unique
+  password            String
+  name                String
+  trackingPreferences Json?
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  userBooks           UserBook[]
 }
 
 model Book {
-  id          String      @id @default(uuid())
-  title       String
-  author      String?
-  coverUrl    String?
-  isbn        String?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  pageCount   Int
-  
+  id         String      @id @default(uuid())
+  title      String
+  author     String?
+  coverUrl   String?
+  isbn       String?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  pageCount  Int
   bookGenres BookGenre[]
-  userBooks   UserBook[]
+  userBooks  UserBook[]
 
   @@index([title])
   @@index([isbn])
@@ -50,8 +50,18 @@ model UserBook {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   progressUnit ProgressUnit  @default(PAGES)
-  book         Book          @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  category           BookCategory?
+  seriesOrder        Int?
+  standaloneOrSeries ReadingFormat?
+  seriesStatus       SeriesStatus?
+  tropes             String?
+  spiceLevel         SpiceLevel?
+  rating             Int?
+  audiobookAvailable AudiobookStatus?
+
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, bookId])
   @@index([userId])
@@ -84,4 +94,44 @@ enum ReadingStatus {
 enum ProgressUnit {
   PERCENT
   PAGES
+}
+
+enum ReadingFormat {
+  STANDALONE
+  SERIES
+}
+
+enum SeriesStatus {
+  COMPLETE
+  ONGOING
+  UNKNOWN
+}
+
+enum SpiceLevel {
+  NONE
+  LOW
+  MEDIUM
+  HIGH
+  VERY_HIGH
+}
+
+enum AudiobookStatus {
+  YES
+  NO
+  UNKNOWN
+}
+
+enum BookCategory {
+  ROMANCE
+  FANTASY
+  DARK_ROMANCE
+  PARANORMAL
+  SCI_FI
+  THRILLER
+  MYSTERY
+  HISTORICAL_ROMANCE
+  CONTEMPORARY_ROMANCE
+  YOUNG_ADULT
+  NEW_ADULT
+  OTHER
 }
