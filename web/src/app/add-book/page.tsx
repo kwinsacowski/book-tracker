@@ -53,6 +53,25 @@ export default function AddBookPage() {
       return;
     }
 
+    if (progressValue.trim() !== "") {
+      const progressNumber = Number(progressValue);
+
+      if (progressNumber < 0) {
+        setError("Progress cannot be less than 0.");
+        return;
+      }
+
+      if (progressUnit === "PAGES" && progressNumber > Number(pageCount)) {
+        setError("Current page cannot be greater than total page count.");
+        return;
+      }
+
+      if (progressUnit === "PERCENT" && progressNumber > 100) {
+        setError("Progress percentage cannot be greater than 100.");
+        return;
+      }
+    }
+
     try {
       setIsSubmitting(true);
 
@@ -97,7 +116,6 @@ export default function AddBookPage() {
       setIsbn("");
       setPageCount("");
       setStatus("WANT_TO_READ");
-      setProgressUnit("PAGES");
       setProgressValue("");
 
       router.refresh();
@@ -258,11 +276,14 @@ export default function AddBookPage() {
           </div>
 
           <div style={{ display: "grid", gap: "8px" }}>
-            <label htmlFor="progressValue">Progress</label>
+            <label htmlFor="progressValue">
+              Current Page
+            </label>
             <input
               id="progressValue"
               type="number"
               min="0"
+              max={progressUnit === "PAGES" ? pageCount || undefined : 100}
               value={progressValue}
               onChange={(e) => setProgressValue(e.target.value)}
               placeholder={
