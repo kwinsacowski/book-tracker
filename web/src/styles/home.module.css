@@ -264,3 +264,22 @@
     align-items: flex-start;
   }
 }
+
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.metaPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(95, 122, 97, 0.12);
+  color: #2f3e34;
+  font-size: 13px;
+  font-weight: 600;
+}

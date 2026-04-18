@@ -10,6 +10,7 @@ import {
   getToken,
   type StoredUser,
 } from "../lib/auth";
+import { getTrackingSettings, type TrackingSettings } from "@/lib/settings";
 import styles from "../styles/home.module.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -18,6 +19,14 @@ type Book = {
   status: string;
   progress: number;
   progressUnit: "PERCENT" | "PAGES";
+  category?: string | null;
+  seriesOrder?: number | null;
+  standaloneOrSeries?: string | null;
+  seriesStatus?: string | null;
+  tropes?: string[] | null;
+  spiceLevel?: string | null;
+  rating?: number | null;
+  audiobookAvailable?: boolean | null;
   book: {
     id: string;
     title: string;
@@ -58,55 +67,78 @@ export default function HomePage() {
   const [user, setUser] = useState<StoredUser | null>(null);
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [settings, setSettings] = useState<TrackingSettings | null>(null);
 
   useEffect(() => {
-    async function syncDashboard() {
-      const storedUser = getStoredUser();
-      const token = getToken();
+  function loadSettings() {
+    setSettings(getTrackingSettings());
+  }
 
-      setUser(storedUser);
+  async function syncDashboard() {
+    const storedUser = getStoredUser();
+    const token = getToken();
 
-      if (!token || !API_URL) {
-        setBooks([]);
-        setIsLoading(false);
-        return;
-      }
+    setUser(storedUser);
 
-      setIsLoading(true);
-
-      try {
-        const response = await fetch(`${API_URL}/books`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          cache: "no-store",
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to load books.");
-        }
-
-        const data = (await response.json()) as Book[];
-        setBooks(data);
-      } catch {
-        setBooks([]);
-      } finally {
-        setIsLoading(false);
-      }
+    if (!token || !API_URL) {
+      setBooks([]);
+      setIsLoading(false);
+      return;
     }
 
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(`${API_URL}/books`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to load books.");
+      }
+
+      const data = (await response.json()) as Book[];
+      setBooks(data);
+    } catch {
+      setBooks([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  loadSettings();
+  void syncDashboard();
+
+  function handleAuthChange() {
     void syncDashboard();
+  }
 
-    function handleAuthChange() {
-      void syncDashboard();
-    }
+  function handleTrackingSettingsChange() {
+    loadSettings();
+  }
 
-    window.addEventListener("auth-change", handleAuthChange);
+  window.addEventListener("auth-change", handleAuthChange);
+  window.addEventListener(
+    "tracking-settings-change",
+    handleTrackingSettingsChange,
+  );
 
-    return () => {
-      window.removeEventListener("auth-change", handleAuthChange);
-    };
-  }, []);
+  return () => {
+    window.removeEventListener("auth-change", handleAuthChange);
+    window.removeEventListener(
+      "tracking-settings-change",
+      handleTrackingSettingsChange,
+    );
+  };
+}, []);
+
+  function canShowOnDashboard(field: keyof TrackingSettings) {
+    if (!settings) return false;
+    return settings[field].tracked && settings[field].showOnDashboard;
+  }
 
   const totalBooks = books.length;
   const readingNow = books.filter((item) => item.status === "READING").length;
@@ -252,6 +284,58 @@ export default function HomePage() {
                             {formatStatus(item.status)}
                           </span>
                         </div>
+
+                        {settings ? (
+                          <div className={styles.metaRow}>
+                            {canShowOnDashboard("category") && item.category ? (
+                              <span className={styles.metaPill}>Category: {item.category}</span>
+                            ) : null}
+
+                            {canShowOnDashboard("seriesOrder") &&
+                            item.seriesOrder !== undefined &&
+                            item.seriesOrder !== null ? (
+                              <span className={styles.metaPill}>Book #{item.seriesOrder}</span>
+                            ) : null}
+
+                            {canShowOnDashboard("standaloneOrSeries") && item.standaloneOrSeries ? (
+                              <span className={styles.metaPill}>
+                                {item.standaloneOrSeries}
+                              </span>
+                            ) : null}
+
+                            {canShowOnDashboard("seriesStatus") && item.seriesStatus ? (
+                              <span className={styles.metaPill}>
+                                Series: {item.seriesStatus}
+                              </span>
+                            ) : null}
+
+                            {canShowOnDashboard("spiceLevel") && item.spiceLevel ? (
+                              <span className={styles.metaPill}>Spice: {item.spiceLevel}</span>
+                            ) : null}
+
+                            {canShowOnDashboard("rating") &&
+                            item.rating !== undefined &&
+                            item.rating !== null ? (
+                              <span className={styles.metaPill}>Rating: {item.rating}/5</span>
+                            ) : null}
+
+                            {canShowOnDashboard("audiobookAvailable") &&
+                            typeof item.audiobookAvailable === "boolean" ? (
+                              <span className={styles.metaPill}>
+                                Audiobook: {item.audiobookAvailable ? "Yes" : "No"}
+                              </span>
+                            ) : null}
+
+                            {canShowOnDashboard("tropes") && item.tropes ? (
+                              <span className={styles.metaPill}>
+                                Tropes:{" "}
+                                {Array.isArray(item.tropes)
+                                  ? item.tropes.join(", ")
+                                  : String(item.tropes)}
+                              </span>
+                            ) : null}
+                          </div>
+                        ) : null}
 
                         <div className={styles.progressRow}>
                           <p className={styles.progressLabel}>

@@ -94,15 +94,21 @@ export default function NavBar() {
                 </li>
               </>
             ) : (
-              <li className={styles.navItem}>
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className={styles.logoutButton}
-                >
-                  Log Out
-                </button>
-              </li>
+              <>
+                <li className={styles.navItem}>
+                  <Link href="/settings">Settings</Link>
+                </li>
+
+                <li className={styles.navItem}>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className={styles.logoutButton}
+                  >
+                    Log Out
+                  </button>
+                </li>
+              </>
             )}
           </ul>
         </nav>
