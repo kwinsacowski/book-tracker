@@ -76,6 +76,7 @@ export default function HomePage() {
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [settings, setSettings] = useState<TrackingSettings | null>(null);
+  const [statusFilter, setStatusFilter] = useState<ReadingStatus | "ALL">("ALL");
 
   useEffect(() => {
   function loadSettings() {
@@ -151,6 +152,10 @@ export default function HomePage() {
   const totalBooks = books.length;
   const readingNow = books.filter((item) => item.status === "READING").length;
   const completed = books.filter((item) => item.status === "COMPLETED").length;
+  const filteredBooks = books.filter((item) => {
+  if (statusFilter === "ALL") return true;
+  return item.status === statusFilter;
+});
 
   const heading = useMemo(() => {
     if (!user) return `Welcome to ${APP_NAME}`;
@@ -223,6 +228,30 @@ export default function HomePage() {
               <h2 className={styles.libraryTitle}>
                 {user ? "Your Books" : "Your Shelf Preview"}
               </h2>
+              {user && (
+                <div style={{ marginTop: "12px" }}>
+                  <label style={{ marginRight: "8px" }}>Filter:</label>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) =>
+                      setStatusFilter(e.target.value as ReadingStatus | "ALL")
+                    }
+                    style={{
+                      height: "36px",
+                      padding: "0 10px",
+                      borderRadius: "8px",
+                      border: "1px solid #d9d9d9",
+                    }}
+                  >
+                    <option value="ALL">All</option>
+                    <option value="WANT_TO_READ">Want to Read</option>
+                    <option value="READING">Reading</option>
+                    <option value="PAUSED">Paused</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="DNF">DNF</option>
+                  </select>
+                </div>
+              )}
               <p className={styles.libraryHint}>
                 {user
                   ? "A quick look at your current reading shelf."
@@ -245,7 +274,7 @@ export default function HomePage() {
             </div>
           ) : (
             <ul className={styles.bookList}>
-              {books.map((item) => {
+              {filteredBooks.map((item) => {
                 const currentPage = item.progress ?? 0;
                 const totalPages = item.book.pageCount ?? 0;
                 const progressPercent = calculateProgressPercent(
