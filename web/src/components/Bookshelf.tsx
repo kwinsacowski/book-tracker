@@ -1,7 +1,9 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import BookSpine from "./BookSpine";
+import styles from "./bookshelf.module.css";
 
 export type ShelfBook = {
   id: string;
@@ -15,7 +17,11 @@ type BookshelfProps = {
   newlyAddedBookId?: string | null;
 };
 
-const BOOKS_PER_SHELF = 8;
+const MIN_BOOKS_PER_SHELF = 3;
+const MAX_BOOKS_PER_SHELF = 12;
+const ESTIMATED_BOOK_WIDTH = 58;
+const SHELF_GAP = 8;
+const SHELF_SIDE_PADDING = 36;
 
 function chunkBooks(books: ShelfBook[], size: number) {
   const rows: ShelfBook[][] = [];
@@ -37,54 +43,67 @@ function getBookHeight(index: number) {
   return heights[index % heights.length];
 }
 
+function getBooksPerShelf(containerWidth: number) {
+  const usableWidth = Math.max(containerWidth - SHELF_SIDE_PADDING, 0);
+  const estimatedSlot = ESTIMATED_BOOK_WIDTH + SHELF_GAP;
+
+  const count = Math.floor(usableWidth / estimatedSlot);
+
+  return Math.max(MIN_BOOKS_PER_SHELF, Math.min(MAX_BOOKS_PER_SHELF, count));
+}
+
 export default function Bookshelf({ books, newlyAddedBookId }: BookshelfProps) {
-  const shelves = chunkBooks(books, BOOKS_PER_SHELF);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [booksPerShelf, setBooksPerShelf] = useState(8);
+
+  useEffect(() => {
+    const element = containerRef.current;
+    if (!element) return;
+
+    function updateBooksPerShelf() {
+      setBooksPerShelf(getBooksPerShelf(element.clientWidth));
+    }
+
+    updateBooksPerShelf();
+
+    const observer = new ResizeObserver(() => {
+      updateBooksPerShelf();
+    });
+
+    observer.observe(element);
+
+    window.addEventListener("resize", updateBooksPerShelf);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateBooksPerShelf);
+    };
+  }, []);
+
+  const shelves = useMemo(() => {
+    return chunkBooks(books, booksPerShelf);
+  }, [books, booksPerShelf]);
 
   if (books.length === 0) {
     return (
-      <div
-        style={{
-          padding: "32px",
-          borderRadius: "16px",
-          background: "#f7f1e8",
-          color: "#5b4636",
-        }}
-      >
+      <div className={styles.emptyState}>
         No books in your library yet.
       </div>
     );
   }
 
   return (
-    <div style={{ display: "grid", gap: "32px" }}>
+    <div ref={containerRef} className={styles.wrapper}>
       {shelves.map((shelf, shelfIndex) => (
-        <div key={`shelf-${shelfIndex}`}>
-          <div
-            style={{
-              minHeight: "240px",
-              padding: "24px 18px 14px",
-              borderRadius: "16px 16px 8px 8px",
-              background:
-                "linear-gradient(to bottom, #f5eee3 0%, #efe2d0 100%)",
-              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.6)",
-            }}
-          >
-            <motion.div
-              layout
-              style={{
-                display: "flex",
-                alignItems: "flex-end",
-                gap: "8px",
-                overflowX: "auto",
-                paddingBottom: "10px",
-              }}
-            >
+        <div key={`shelf-${shelfIndex}`} className={styles.shelfBlock}>
+          <div className={styles.shelfSurface}>
+            <motion.div layout className={styles.booksRow}>
               <AnimatePresence>
                 {shelf.map((book, index) => (
                   <motion.div
                     key={book.id}
                     layout
-                    style={{ display: "flex", alignItems: "flex-end" }}
+                    className={styles.bookSlot}
                   >
                     <BookSpine
                       id={book.id}
@@ -100,16 +119,7 @@ export default function Bookshelf({ books, newlyAddedBookId }: BookshelfProps) {
               </AnimatePresence>
             </motion.div>
 
-            <div
-              style={{
-                height: "14px",
-                marginTop: "6px",
-                borderRadius: "4px",
-                background:
-                  "linear-gradient(to bottom, #8b5e3c 0%, #6f4b2d 100%)",
-                boxShadow: "0 4px 8px rgba(0,0,0,0.15)",
-              }}
-            />
+            <div className={styles.shelfBoard} />
           </div>
         </div>
       ))}

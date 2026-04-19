@@ -1,0 +1,67 @@
+.wrapper {
+  display: grid;
+  gap: 32px;
+  width: 100%;
+}
+
+.shelfBlock {
+  width: 100%;
+}
+
+.shelfSurface {
+  min-height: 240px;
+  padding: 24px 18px 14px;
+  border-radius: 16px 16px 8px 8px;
+  background: linear-gradient(to bottom, #f5eee3 0%, #efe2d0 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.booksRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding-bottom: 10px;
+  width: 100%;
+  overflow: hidden;
+  flex-wrap: nowrap;
+}
+
+.bookSlot {
+  display: flex;
+  align-items: flex-end;
+  flex: 0 0 auto;
+}
+
+.shelfBoard {
+  height: 14px;
+  margin-top: 6px;
+  border-radius: 4px;
+  background: linear-gradient(to bottom, #8b5e3c 0%, #6f4b2d 100%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.emptyState {
+  padding: 32px;
+  border-radius: 16px;
+  background: #f7f1e8;
+  color: #5b4636;
+}
+
+@media (max-width: 700px) {
+  .wrapper {
+    gap: 22px;
+  }
+
+  .shelfSurface {
+    min-height: 210px;
+    padding: 18px 12px 12px;
+  }
+
+  .booksRow {
+    gap: 6px;
+  }
+
+  .shelfBoard {
+    height: 12px;
+  }
+}

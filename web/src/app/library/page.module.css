@@ -1,0 +1,89 @@
+.page {
+  padding: 32px;
+  display: grid;
+  gap: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  color: #4b2e1f;
+}
+
+.shelfSection {
+  width: 100%;
+}
+
+.messageCard,
+.errorCard {
+  padding: 32px;
+  border-radius: 20px;
+  max-width: 900px;
+}
+
+.messageCard {
+  background: #f7f1e8;
+  color: #5b4636;
+  display: grid;
+  gap: 16px;
+}
+
+.errorCard {
+  background: rgba(180, 35, 24, 0.08);
+  color: #b42318;
+  border: 1px solid rgba(180, 35, 24, 0.18);
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #4b2e1f;
+}
+
+.cardText {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.actionRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.addButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.addButton {
+  background: #5b3b2f;
+  color: #fffaf3;
+}
+
+.secondaryButton {
+  border: 1px solid #5b3b2f;
+  color: #5b3b2f;
+  background: transparent;
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 20px;
+  }
+}
