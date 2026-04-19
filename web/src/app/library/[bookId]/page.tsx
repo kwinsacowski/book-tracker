@@ -520,6 +520,23 @@ export default function SingleBookPage() {
                     }}
                   />
                 </div>
+
+                <div style={{ display: "grid", gap: "8px" }}>
+                  <label htmlFor="pageCount">Total Pages</label>
+                  <input
+                    id="pageCount"
+                    type="number"
+                    min="1"
+                    value={pageCount}
+                    onChange={(e) => setPageCount(e.target.value)}
+                    style={{
+                      height: "44px",
+                      padding: "0 14px",
+                      borderRadius: "12px",
+                      border: "1px solid #d9d9d9",
+                    }}
+                  />
+                </div>
               </div>
 
               <div
