@@ -14,8 +14,6 @@ type ReadingStatus =
   | "COMPLETED"
   | "DNF";
 
-type ProgressUnit = "PERCENT" | "PAGES";
-
 export default function AddBookPage() {
   const router = useRouter();
 
@@ -26,7 +24,6 @@ export default function AddBookPage() {
   const [pageCount, setPageCount] = useState("");
 
   const [status, setStatus] = useState<ReadingStatus>("WANT_TO_READ");
-  const [progressUnit, setProgressUnit] = useState<ProgressUnit>("PAGES");
   const [progressValue, setProgressValue] = useState("");
 
   const [error, setError] = useState("");
@@ -94,7 +91,6 @@ export default function AddBookPage() {
         isbn: isbn.trim() || undefined,
         pageCount: Number(pageCount),
         status,
-        progressUnit,
         progress:
           progressValue.trim() !== "" ? Number(progressValue.trim()) : undefined,
         category: category || undefined,
@@ -266,24 +262,6 @@ export default function AddBookPage() {
               <option value="PAUSED">Paused</option>
               <option value="COMPLETED">Completed</option>
               <option value="DNF">DNF</option>
-            </select>
-          </div>
-
-          <div style={{ display: "grid", gap: "8px" }}>
-            <label htmlFor="progressUnit">Progress Unit</label>
-            <select
-              id="progressUnit"
-              value={progressUnit}
-              onChange={(e) => setProgressUnit(e.target.value as ProgressUnit)}
-              style={{
-                height: "44px",
-                padding: "0 14px",
-                borderRadius: "12px",
-                border: "1px solid #d9d9d9",
-              }}
-            >
-              <option value="PAGES">Pages</option>
-              <option value="PERCENT">Percent</option>
             </select>
           </div>
 

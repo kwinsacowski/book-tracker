@@ -8,6 +8,7 @@ import {
   getLibraryBook,
   updateLibraryBook,
 } from "@/lib/books";
+import { getTrackingSettings, type TrackingSettings } from "@/lib/settings";
 
 function formatStatus(status: string) {
   switch (status) {
@@ -42,10 +43,10 @@ export default function SingleBookPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [settings, setSettings] = useState<TrackingSettings | null>(null);
 
   const [isEditing, setIsEditing] = useState(false);
   const [status, setStatus] = useState("WANT_TO_READ");
-  const [progressUnit, setProgressUnit] = useState("PAGES");
   const [progressValue, setProgressValue] = useState("0");
   const [saveError, setSaveError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -71,6 +72,7 @@ export default function SingleBookPage() {
     }
 
     setIsLoggedIn(true);
+    setSettings(getTrackingSettings());
 
     let isMounted = true;
 
@@ -84,8 +86,16 @@ export default function SingleBookPage() {
         if (isMounted) {
           setItem(data);
           setStatus(data.status ?? "WANT_TO_READ");
-          setProgressUnit(data.progressUnit ?? "PAGES");
           setProgressValue(String(data.progress ?? 0));
+
+          setCategory(data.category ?? "");
+          setSeriesOrder(data.seriesOrder ? String(data.seriesOrder) : "");
+          setStandaloneOrSeries(data.standaloneOrSeries ?? "");
+          setSeriesStatus(data.seriesStatus ?? "");
+          setTropes(data.tropes ?? "");
+          setSpiceLevel(data.spiceLevel ?? "");
+          setRating(data.rating ? String(data.rating) : "");
+          setAudiobookAvailable(data.audiobookAvailable ?? "");
         }
       } catch (err) {
         if (isMounted) {
@@ -107,6 +117,24 @@ export default function SingleBookPage() {
     };
   }, [bookId]);
 
+  useEffect(() => {
+  function handleTrackingSettingsChange() {
+    setSettings(getTrackingSettings());
+  }
+
+  window.addEventListener(
+    "tracking-settings-change",
+    handleTrackingSettingsChange,
+  );
+
+  return () => {
+    window.removeEventListener(
+      "tracking-settings-change",
+      handleTrackingSettingsChange,
+    );
+  };
+}, []);
+
   const currentPage = item?.progress ?? 0;
   const totalPages = item?.book.pageCount ?? 0;
 
@@ -115,6 +143,11 @@ export default function SingleBookPage() {
   }, [currentPage, totalPages]);
 
   const genres = item?.book.bookGenres?.map((entry) => entry.genre.name) ?? [];
+
+  function canShowOnSingleBook(field: keyof TrackingSettings) {
+  if (!settings) return false;
+  return settings[field].tracked && settings[field].showOnSingleBook;
+}
 
   async function handleSave(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -144,7 +177,6 @@ export default function SingleBookPage() {
 
       const updated = await updateLibraryBook(bookId, {
         status,
-        progressUnit,
         progress: nextProgress,
         category: category || undefined,
         seriesOrder: seriesOrder ? Number(seriesOrder) : undefined,
@@ -158,7 +190,6 @@ export default function SingleBookPage() {
 
       setItem(updated);
       setStatus(updated.status ?? "WANT_TO_READ");
-      setProgressUnit(updated.progressUnit ?? "PAGES");
       setProgressValue(String(updated.progress ?? 0));
       setIsEditing(false);
     } catch (err) {
@@ -323,8 +354,17 @@ export default function SingleBookPage() {
                 type="button"
                 onClick={() => {
                   setStatus(item.status ?? "WANT_TO_READ");
-                  setProgressUnit(item.progressUnit ?? "PAGES");
                   setProgressValue(String(item.progress ?? 0));
+
+                  setCategory(item.category ?? "");
+                  setSeriesOrder(item.seriesOrder ? String(item.seriesOrder) : "");
+                  setStandaloneOrSeries(item.standaloneOrSeries ?? "");
+                  setSeriesStatus(item.seriesStatus ?? "");
+                  setTropes(item.tropes ?? "");
+                  setSpiceLevel(item.spiceLevel ?? "");
+                  setRating(item.rating ? String(item.rating) : "");
+                  setAudiobookAvailable(item.audiobookAvailable ?? "");
+
                   setSaveError("");
                   setIsEditing(true);
                 }}
@@ -358,35 +398,35 @@ export default function SingleBookPage() {
                 <StatCard label="Total Pages" value={String(totalPages)} />
                 <StatCard label="Progress" value={`${calculatedPercent}%`} />
 
-                {item.category ? (
+                {canShowOnSingleBook("category") && item.category ? (
                   <StatCard label="Category" value={item.category} />
                 ) : null}
 
-                {item.seriesOrder ? (
+                {canShowOnSingleBook("seriesOrder") && item.seriesOrder ? (
                   <StatCard label="Series Order" value={String(item.seriesOrder)} />
                 ) : null}
 
-                {item.standaloneOrSeries ? (
+                {canShowOnSingleBook("standaloneOrSeries") && item.standaloneOrSeries ? (
                   <StatCard label="Format" value={item.standaloneOrSeries} />
                 ) : null}
 
-                {item.seriesStatus ? (
+                {canShowOnSingleBook("seriesStatus") && item.seriesStatus ? (
                   <StatCard label="Series Status" value={item.seriesStatus} />
                 ) : null}
 
-                {item.spiceLevel ? (
+                {canShowOnSingleBook("spiceLevel") && item.spiceLevel ? (
                   <StatCard label="Spice Level" value={item.spiceLevel} />
                 ) : null}
 
-                {item.rating ? (
+                {canShowOnSingleBook("rating") && item.rating ? (
                   <StatCard label="Rating" value={`${item.rating}/5`} />
                 ) : null}
 
-                {item.audiobookAvailable ? (
+                {canShowOnSingleBook("audiobookAvailable") && item.audiobookAvailable ? (
                   <StatCard label="Audiobook" value={item.audiobookAvailable} />
                 ) : null}
 
-                {item.tropes ? (
+                {canShowOnSingleBook("tropes") && item.tropes ? (
                   <div style={{ display: "grid", gap: "4px" }}>
                     <strong style={{ color: "#4b2e1f" }}>Tropes</strong>
                     <span style={{ color: "#6b5748" }}>{item.tropes}</span>
@@ -449,24 +489,6 @@ export default function SingleBookPage() {
                 </div>
 
                 <div style={{ display: "grid", gap: "8px" }}>
-                  <label htmlFor="progressUnit">Progress Unit</label>
-                  <select
-                    id="progressUnit"
-                    value={progressUnit}
-                    onChange={(e) => setProgressUnit(e.target.value)}
-                    style={{
-                      height: "44px",
-                      padding: "0 14px",
-                      borderRadius: "12px",
-                      border: "1px solid #d9d9d9",
-                    }}
-                  >
-                    <option value="PAGES">Pages</option>
-                    <option value="PERCENT">Percent</option>
-                  </select>
-                </div>
-
-                <div style={{ display: "grid", gap: "8px" }}>
                   <label htmlFor="progressValue">Current Page</label>
                   <input
                     id="progressValue"
@@ -483,6 +505,191 @@ export default function SingleBookPage() {
                     }}
                   />
                 </div>
+              </div>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                  gap: "16px",
+                }}
+              >
+                {canShowOnSingleBook("category") ? (
+                  <div style={{ display: "grid", gap: "8px" }}>
+                    <label htmlFor="category">Category</label>
+                    <select
+                      id="category"
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      style={{
+                        height: "44px",
+                        padding: "0 14px",
+                        borderRadius: "12px",
+                        border: "1px solid #d9d9d9",
+                      }}
+                    >
+                      <option value="">Select category</option>
+                      <option value="ROMANCE">Romance</option>
+                      <option value="FANTASY">Fantasy</option>
+                      <option value="DARK_ROMANCE">Dark Romance</option>
+                      <option value="PARANORMAL">Paranormal</option>
+                      <option value="SCI_FI">Sci-Fi</option>
+                      <option value="THRILLER">Thriller</option>
+                      <option value="MYSTERY">Mystery</option>
+                      <option value="HISTORICAL_ROMANCE">Historical Romance</option>
+                      <option value="CONTEMPORARY_ROMANCE">Contemporary Romance</option>
+                      <option value="YOUNG_ADULT">Young Adult</option>
+                      <option value="NEW_ADULT">New Adult</option>
+                      <option value="OTHER">Other</option>
+                    </select>
+                  </div>
+                ) : null}
+
+                {canShowOnSingleBook("seriesOrder") ? (
+                  <div style={{ display: "grid", gap: "8px" }}>
+                    <label htmlFor="seriesOrder">Series Order</label>
+                    <input
+                      id="seriesOrder"
+                      type="number"
+                      min="1"
+                      value={seriesOrder}
+                      onChange={(e) => setSeriesOrder(e.target.value)}
+                      style={{
+                        height: "44px",
+                        padding: "0 14px",
+                        borderRadius: "12px",
+                        border: "1px solid #d9d9d9",
+                      }}
+                    />
+                  </div>
+                ) : null}
+
+                {canShowOnSingleBook("standaloneOrSeries") ? (
+                  <div style={{ display: "grid", gap: "8px" }}>
+                    <label htmlFor="standaloneOrSeries">Standalone or Series</label>
+                    <select
+                      id="standaloneOrSeries"
+                      value={standaloneOrSeries}
+                      onChange={(e) => setStandaloneOrSeries(e.target.value)}
+                      style={{
+                        height: "44px",
+                        padding: "0 14px",
+                        borderRadius: "12px",
+                        border: "1px solid #d9d9d9",
+                      }}
+                    >
+                      <option value="">Select format</option>
+                      <option value="STANDALONE">Standalone</option>
+                      <option value="SERIES">Series</option>
+                    </select>
+                  </div>
+                ) : null}
+
+                {canShowOnSingleBook("seriesStatus") ? (
+                  <div style={{ display: "grid", gap: "8px" }}>
+                    <label htmlFor="seriesStatus">Series Status</label>
+                    <select
+                      id="seriesStatus"
+                      value={seriesStatus}
+                      onChange={(e) => setSeriesStatus(e.target.value)}
+                      style={{
+                        height: "44px",
+                        padding: "0 14px",
+                        borderRadius: "12px",
+                        border: "1px solid #d9d9d9",
+                      }}
+                    >
+                      <option value="">Select series status</option>
+                      <option value="COMPLETE">Complete</option>
+                      <option value="ONGOING">Ongoing</option>
+                      <option value="UNKNOWN">Unknown</option>
+                    </select>
+                  </div>
+                ) : null}
+
+                {canShowOnSingleBook("tropes") ? (
+                  <div style={{ display: "grid", gap: "8px" }}>
+                    <label htmlFor="tropes">Tropes</label>
+                    <input
+                      id="tropes"
+                      value={tropes}
+                      onChange={(e) => setTropes(e.target.value)}
+                      placeholder="Enemies to Lovers, Fated Mates"
+                      style={{
+                        height: "44px",
+                        padding: "0 14px",
+                        borderRadius: "12px",
+                        border: "1px solid #d9d9d9",
+                      }}
+                    />
+                  </div>
+                ) : null}
+
+                {canShowOnSingleBook("spiceLevel") ? (
+                  <div style={{ display: "grid", gap: "8px" }}>
+                    <label htmlFor="spiceLevel">Spice Level</label>
+                    <select
+                      id="spiceLevel"
+                      value={spiceLevel}
+                      onChange={(e) => setSpiceLevel(e.target.value)}
+                      style={{
+                        height: "44px",
+                        padding: "0 14px",
+                        borderRadius: "12px",
+                        border: "1px solid #d9d9d9",
+                      }}
+                    >
+                      <option value="">Select spice level</option>
+                      <option value="NONE">None</option>
+                      <option value="LOW">Low</option>
+                      <option value="MEDIUM">Medium</option>
+                      <option value="HIGH">High</option>
+                      <option value="VERY_HIGH">Very High</option>
+                    </select>
+                  </div>
+                ) : null}
+
+                {canShowOnSingleBook("rating") ? (
+                  <div style={{ display: "grid", gap: "8px" }}>
+                    <label htmlFor="rating">Rating</label>
+                    <input
+                      id="rating"
+                      type="number"
+                      min="1"
+                      max="5"
+                      value={rating}
+                      onChange={(e) => setRating(e.target.value)}
+                      style={{
+                        height: "44px",
+                        padding: "0 14px",
+                        borderRadius: "12px",
+                        border: "1px solid #d9d9d9",
+                      }}
+                    />
+                  </div>
+                ) : null}
+
+                {canShowOnSingleBook("audiobookAvailable") ? (
+                  <div style={{ display: "grid", gap: "8px" }}>
+                    <label htmlFor="audiobookAvailable">Audiobook Availability</label>
+                    <select
+                      id="audiobookAvailable"
+                      value={audiobookAvailable}
+                      onChange={(e) => setAudiobookAvailable(e.target.value)}
+                      style={{
+                        height: "44px",
+                        padding: "0 14px",
+                        borderRadius: "12px",
+                        border: "1px solid #d9d9d9",
+                      }}
+                    >
+                      <option value="">Select audiobook status</option>
+                      <option value="YES">Yes</option>
+                      <option value="NO">No</option>
+                      <option value="UNKNOWN">Unknown</option>
+                    </select>
+                  </div>
+                ) : null}
               </div>
 
               <div style={{ color: "#6b5748", fontSize: "14px" }}>
@@ -516,8 +723,17 @@ export default function SingleBookPage() {
                   type="button"
                   onClick={() => {
                     setStatus(item.status ?? "WANT_TO_READ");
-                    setProgressUnit(item.progressUnit ?? "PAGES");
                     setProgressValue(String(item.progress ?? 0));
+
+                    setCategory(item.category ?? "");
+                    setSeriesOrder(item.seriesOrder ? String(item.seriesOrder) : "");
+                    setStandaloneOrSeries(item.standaloneOrSeries ?? "");
+                    setSeriesStatus(item.seriesStatus ?? "");
+                    setTropes(item.tropes ?? "");
+                    setSpiceLevel(item.spiceLevel ?? "");
+                    setRating(item.rating ? String(item.rating) : "");
+                    setAudiobookAvailable(item.audiobookAvailable ?? "");
+
                     setSaveError("");
                     setIsEditing(false);
                   }}

@@ -34,7 +34,7 @@ export type BackendSingleLibraryItem = BackendLibraryItem;
 export type UpdateLibraryBookPayload = {
   status?: string;
   progress?: number;
-  progressUnit?: string;
+  pageCount?: number;
   category?: string;
   seriesOrder?: number;
   standaloneOrSeries?: string;

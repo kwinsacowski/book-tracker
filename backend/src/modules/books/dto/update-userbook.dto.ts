@@ -1,11 +1,10 @@
 import {
   AudiobookStatus,
   BookCategory,
-  ProgressUnit,
   ReadingFormat,
   ReadingStatus,
   SeriesStatus,
-  SpiceLevel,
+  SpiceLevel
 } from '@prisma/client';
 import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 
@@ -15,13 +14,14 @@ export class UpdateUserBookDto {
   status?: ReadingStatus;
 
   @IsOptional()
-  @IsEnum(ProgressUnit)
-  progressUnit?: ProgressUnit;
-
-  @IsOptional()
   @IsInt()
   @Min(0)
   progress?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  pageCount?: number;
 
   @IsOptional()
   @IsEnum(BookCategory)

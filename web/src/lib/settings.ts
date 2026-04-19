@@ -67,6 +67,8 @@ export function saveTrackingSettings(settings: TrackingSettings) {
 }
 
 export function resetTrackingSettings() {
-  const defaults = buildDefaultSettings();
-  saveTrackingSettings(defaults);
+  if (typeof window === "undefined") return;
+
+  localStorage.removeItem(SETTINGS_KEY);
+  window.dispatchEvent(new Event("tracking-settings-change"));
 }

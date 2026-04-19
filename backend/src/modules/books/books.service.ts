@@ -133,12 +133,22 @@ export class BooksService {
     });
   }
 
-  updateMyBook(userId: string, bookId: string, dto: UpdateUserBookDto) {
-    return this.prisma.userBook.update({
+  async updateMyBook(userId: string, bookId: string, dto: UpdateUserBookDto) {
+  const { pageCount, ...userBookData } = dto;
+
+  return this.prisma.$transaction(async (tx) => {
+    if (pageCount !== undefined) {
+      await tx.book.update({
+        where: { id: bookId },
+        data: { pageCount },
+      });
+    }
+
+    return tx.userBook.update({
       where: {
         userId_bookId: { userId, bookId },
       },
-      data: dto,
+      data: userBookData,
       include: {
         book: {
           include: {
@@ -147,7 +157,8 @@ export class BooksService {
         },
       },
     });
-  }
+  });
+}
 
   removeFromMyLibrary(userId: string, bookId: string) {
     return this.prisma.userBook.delete({
