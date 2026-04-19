@@ -76,8 +76,8 @@ export default function HomePage() {
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [settings, setSettings] = useState<TrackingSettings | null>(null);
-  const [statusFilter, setStatusFilter] = useState<ReadingStatus | "ALL">("ALL");
-
+  const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  
   useEffect(() => {
   function loadSettings() {
     setSettings(getTrackingSettings());
@@ -234,7 +234,8 @@ export default function HomePage() {
                   <select
                     value={statusFilter}
                     onChange={(e) =>
-                      setStatusFilter(e.target.value as ReadingStatus | "ALL")
+                      setStatusFilter(e.target.value
+                      )
                     }
                     style={{
                       height: "36px",
