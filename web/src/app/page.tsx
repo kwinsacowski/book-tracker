@@ -63,6 +63,14 @@ function formatStatus(status: string) {
   }
 }
 
+function formatEnumLabel(value: string) {
+  return value
+    .toLowerCase()
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 export default function HomePage() {
   const [user, setUser] = useState<StoredUser | null>(null);
   const [books, setBooks] = useState<Book[]>([]);
@@ -288,7 +296,7 @@ export default function HomePage() {
                         {settings ? (
                           <div className={styles.metaRow}>
                             {canShowOnDashboard("category") && item.category ? (
-                              <span className={styles.metaPill}>Category: {item.category}</span>
+                              <span className={styles.metaPill}>Category: {formatEnumLabel(item.category)}</span>
                             ) : null}
 
                             {canShowOnDashboard("seriesOrder") &&
@@ -299,18 +307,18 @@ export default function HomePage() {
 
                             {canShowOnDashboard("standaloneOrSeries") && item.standaloneOrSeries ? (
                               <span className={styles.metaPill}>
-                                {item.standaloneOrSeries}
+                                {formatEnumLabel(item.standaloneOrSeries)}
                               </span>
                             ) : null}
 
                             {canShowOnDashboard("seriesStatus") && item.seriesStatus ? (
                               <span className={styles.metaPill}>
-                                Series: {item.seriesStatus}
+                                Series: {formatEnumLabel(item.seriesStatus)}
                               </span>
                             ) : null}
 
                             {canShowOnDashboard("spiceLevel") && item.spiceLevel ? (
-                              <span className={styles.metaPill}>Spice: {item.spiceLevel}</span>
+                              <span className={styles.metaPill}>Spice: {formatEnumLabel(item.spiceLevel)}</span>
                             ) : null}
 
                             {canShowOnDashboard("rating") &&
