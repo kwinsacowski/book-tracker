@@ -51,6 +51,7 @@ export default function SingleBookPage() {
   const [saveError, setSaveError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
+  const [pageCount, setPageCount] = useState("0");
   const [category, setCategory] = useState("");
   const [seriesOrder, setSeriesOrder] = useState("");
   const [standaloneOrSeries, setStandaloneOrSeries] = useState("");
@@ -87,6 +88,7 @@ export default function SingleBookPage() {
           setItem(data);
           setStatus(data.status ?? "WANT_TO_READ");
           setProgressValue(String(data.progress ?? 0));
+          setPageCount(String(data.book.pageCount ?? 0));
 
           setCategory(data.category ?? "");
           setSeriesOrder(data.seriesOrder ? String(data.seriesOrder) : "");
@@ -156,6 +158,17 @@ export default function SingleBookPage() {
     if (!item) return;
 
     const nextProgress = Number(progressValue.trim());
+    const nextPageCount = Number(pageCount.trim());
+
+    if (Number.isNaN(nextPageCount)) {
+      setSaveError("Total pages must be a number.");
+      return;
+    }
+
+    if (nextPageCount <= 0) {
+      setSaveError("Total pages must be greater than 0.");
+      return;
+    }
 
     if (Number.isNaN(nextProgress)) {
       setSaveError("Current page must be a number.");
@@ -167,7 +180,7 @@ export default function SingleBookPage() {
       return;
     }
 
-    if (nextProgress > (item.book.pageCount ?? 0)) {
+    if (nextProgress > nextPageCount) {
       setSaveError("Current page cannot be greater than total page count.");
       return;
     }
@@ -178,6 +191,7 @@ export default function SingleBookPage() {
       const updated = await updateLibraryBook(bookId, {
         status,
         progress: nextProgress,
+        pageCount: nextPageCount,
         category: category || undefined,
         seriesOrder: seriesOrder ? Number(seriesOrder) : undefined,
         standaloneOrSeries: standaloneOrSeries || undefined,
@@ -191,6 +205,7 @@ export default function SingleBookPage() {
       setItem(updated);
       setStatus(updated.status ?? "WANT_TO_READ");
       setProgressValue(String(updated.progress ?? 0));
+      setPageCount(String(updated.book.pageCount ?? 0));
       setIsEditing(false);
     } catch (err) {
       setSaveError(
