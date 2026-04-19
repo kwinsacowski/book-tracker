@@ -57,7 +57,7 @@ model UserBook {
   seriesStatus       SeriesStatus?
   tropes             String?
   spiceLevel         SpiceLevel?
-  rating             Int?
+  rating             Float?
   audiobookAvailable AudiobookStatus?
 
   book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)

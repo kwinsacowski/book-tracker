@@ -99,7 +99,7 @@ export default function AddBookPage() {
         seriesStatus: seriesStatus || undefined,
         tropes: tropes.trim() || undefined,
         spiceLevel: spiceLevel || undefined,
-        rating: rating ? Number(rating) : undefined,
+        rating: rating.trim() !== "" ? Number(rating) : undefined,
         audiobookAvailable: audiobookAvailable || undefined,
       };
 
@@ -415,7 +415,8 @@ export default function AddBookPage() {
               <input
                 id="rating"
                 type="number"
-                min="1"
+                step="0.01"
+                min="0"
                 max="5"
                 value={rating}
                 onChange={(e) => setRating(e.target.value)}

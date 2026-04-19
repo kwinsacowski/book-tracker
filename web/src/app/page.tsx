@@ -324,7 +324,7 @@ export default function HomePage() {
                             {canShowOnDashboard("rating") &&
                             item.rating !== undefined &&
                             item.rating !== null ? (
-                              <span className={styles.metaPill}>Rating: {item.rating}/5</span>
+                              <span className={styles.metaPill}>Rating: {Number(item.rating).toString()}/5</span>
                             ) : null}
 
                             {canShowOnDashboard("audiobookAvailable") &&

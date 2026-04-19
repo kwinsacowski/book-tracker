@@ -6,7 +6,7 @@ import {
   SeriesStatus,
   SpiceLevel
 } from '@prisma/client';
-import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsString, Max, Min, IsNumber } from 'class-validator';
 
 export class UpdateUserBookDto {
   @IsOptional()
@@ -48,9 +48,9 @@ export class UpdateUserBookDto {
   @IsEnum(SpiceLevel)
   spiceLevel?: SpiceLevel;
 
-  @IsOptional()
-  @IsInt()
-  @Min(1)
+ @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
   @Max(5)
   rating?: number;
 

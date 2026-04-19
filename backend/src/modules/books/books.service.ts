@@ -61,6 +61,9 @@ export class BooksService {
       ...bookData
     } = dto;
 
+    const normalizedRating =
+      rating !== undefined && rating !== null ? Number(rating) : null;
+
     return this.prisma.$transaction(async (tx) => {
       const existing =
         bookData.isbn != null
@@ -104,7 +107,7 @@ export class BooksService {
           seriesStatus: seriesStatus ?? null,
           tropes: tropes ?? null,
           spiceLevel: spiceLevel ?? null,
-          rating: rating ?? null,
+          rating: normalizedRating,
           audiobookAvailable: audiobookAvailable ?? null,
         },
         create: {
@@ -119,7 +122,7 @@ export class BooksService {
           seriesStatus: seriesStatus ?? null,
           tropes: tropes ?? null,
           spiceLevel: spiceLevel ?? null,
-          rating: rating ?? null,
+          rating: normalizedRating,
           audiobookAvailable: audiobookAvailable ?? null,
         },
         include: {
@@ -134,7 +137,10 @@ export class BooksService {
   }
 
   async updateMyBook(userId: string, bookId: string, dto: UpdateUserBookDto) {
-  const { pageCount, ...userBookData } = dto;
+    const { pageCount,rating, ...userBookData } = dto;
+
+    const normalizedRating =
+    rating !== undefined && rating !== null ? Number(rating) : undefined;
 
   return this.prisma.$transaction(async (tx) => {
     if (pageCount !== undefined) {
@@ -148,7 +154,10 @@ export class BooksService {
       where: {
         userId_bookId: { userId, bookId },
       },
-      data: userBookData,
+      data: {
+        ...userBookData,
+        ...(rating !== undefined ? { rating: normalizedRating } : {}),
+      },
       include: {
         book: {
           include: {

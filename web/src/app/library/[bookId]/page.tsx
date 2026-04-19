@@ -96,7 +96,7 @@ export default function SingleBookPage() {
           setSeriesStatus(data.seriesStatus ?? "");
           setTropes(data.tropes ?? "");
           setSpiceLevel(data.spiceLevel ?? "");
-          setRating(data.rating ? String(data.rating) : "");
+          setRating(data.rating !== null && data.rating !== undefined ? String(data.rating) : "");
           setAudiobookAvailable(data.audiobookAvailable ?? "");
         }
       } catch (err) {
@@ -198,14 +198,23 @@ export default function SingleBookPage() {
         seriesStatus: seriesStatus || undefined,
         tropes: tropes.trim() || undefined,
         spiceLevel: spiceLevel || undefined,
-        rating: rating ? Number(rating) : undefined,
+        rating: rating.trim() !== "" ? Number(rating) : undefined,
         audiobookAvailable: audiobookAvailable || undefined,
       });
 
-      setItem(updated);
-      setStatus(updated.status ?? "WANT_TO_READ");
-      setProgressValue(String(updated.progress ?? 0));
-      setPageCount(String(updated.book.pageCount ?? 0));
+      console.log("PATCH returned:", updated);
+
+      const refreshed = await getLibraryBook(bookId);
+
+      setItem(refreshed);
+      setStatus(refreshed.status ?? "WANT_TO_READ");
+      setProgressValue(String(refreshed.progress ?? 0));
+      setPageCount(String(refreshed.book.pageCount ?? 0));
+      setRating(
+        refreshed.rating !== null && refreshed.rating !== undefined
+          ? String(refreshed.rating)
+          : ""
+      );
       setIsEditing(false);
     } catch (err) {
       setSaveError(
@@ -377,7 +386,7 @@ export default function SingleBookPage() {
                   setSeriesStatus(item.seriesStatus ?? "");
                   setTropes(item.tropes ?? "");
                   setSpiceLevel(item.spiceLevel ?? "");
-                  setRating(item.rating ? String(item.rating) : "");
+                  setRating(item.rating !== null && item.rating !== undefined ? String(item.rating) : "");
                   setAudiobookAvailable(item.audiobookAvailable ?? "");
 
                   setSaveError("");
@@ -434,7 +443,10 @@ export default function SingleBookPage() {
                 ) : null}
 
                 {canShowOnSingleBook("rating") && item.rating ? (
-                  <StatCard label="Rating" value={`${item.rating}/5`} />
+                  <StatCard
+                    label="Rating"
+                    value={`${Number(item.rating).toString()}/5`}
+                  />
                 ) : null}
 
                 {canShowOnSingleBook("audiobookAvailable") && item.audiobookAvailable ? (
@@ -687,7 +699,8 @@ export default function SingleBookPage() {
                     <input
                       id="rating"
                       type="number"
-                      min="1"
+                      step="0.01"
+                      min="0"
                       max="5"
                       value={rating}
                       onChange={(e) => setRating(e.target.value)}
@@ -763,7 +776,11 @@ export default function SingleBookPage() {
                     setSeriesStatus(item.seriesStatus ?? "");
                     setTropes(item.tropes ?? "");
                     setSpiceLevel(item.spiceLevel ?? "");
-                    setRating(item.rating ? String(item.rating) : "");
+                    setRating(
+                      item.rating !== null && item.rating !== undefined
+                        ? String(item.rating)
+                        : ""
+                    );
                     setAudiobookAvailable(item.audiobookAvailable ?? "");
 
                     setSaveError("");
