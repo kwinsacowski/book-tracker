@@ -39,10 +39,7 @@ function calculateProgressPercent(
   currentPage: number,
   totalPages?: number | null,
 ) {
-  if (!totalPages || totalPages <= 0) {
-    return 0;
-  }
-
+  if (!totalPages || totalPages <= 0) return 0;
   return Math.min(Math.round((currentPage / totalPages) * 100), 100);
 }
 
@@ -76,73 +73,79 @@ export default function HomePage() {
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [settings, setSettings] = useState<TrackingSettings | null>(null);
+
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
-  
+  const [authorFilter, setAuthorFilter] = useState<string>("ALL");
+  const [tropeFilter, setTropeFilter] = useState<string>("ALL");
+  const [spiceFilter, setSpiceFilter] = useState<string>("ALL");
+  const [ratingFilter, setRatingFilter] = useState<string>("ALL");
+  const [categoryFilter, setCategoryFilter] = useState<string>("ALL");
+
   useEffect(() => {
-  function loadSettings() {
-    setSettings(getTrackingSettings());
-  }
-
-  async function syncDashboard() {
-    const storedUser = getStoredUser();
-    const token = getToken();
-
-    setUser(storedUser);
-
-    if (!token || !API_URL) {
-      setBooks([]);
-      setIsLoading(false);
-      return;
+    function loadSettings() {
+      setSettings(getTrackingSettings());
     }
 
-    setIsLoading(true);
+    async function syncDashboard() {
+      const storedUser = getStoredUser();
+      const token = getToken();
 
-    try {
-      const response = await fetch(`${API_URL}/books`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        cache: "no-store",
-      });
+      setUser(storedUser);
 
-      if (!response.ok) {
-        throw new Error("Failed to load books.");
+      if (!token || !API_URL) {
+        setBooks([]);
+        setIsLoading(false);
+        return;
       }
 
-      const data = (await response.json()) as Book[];
-      setBooks(data);
-    } catch {
-      setBooks([]);
-    } finally {
-      setIsLoading(false);
+      setIsLoading(true);
+
+      try {
+        const response = await fetch(`${API_URL}/books`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load books.");
+        }
+
+        const data = (await response.json()) as Book[];
+        setBooks(data);
+      } catch {
+        setBooks([]);
+      } finally {
+        setIsLoading(false);
+      }
     }
-  }
 
-  loadSettings();
-  void syncDashboard();
-
-  function handleAuthChange() {
-    void syncDashboard();
-  }
-
-  function handleTrackingSettingsChange() {
     loadSettings();
-  }
+    void syncDashboard();
 
-  window.addEventListener("auth-change", handleAuthChange);
-  window.addEventListener(
-    "tracking-settings-change",
-    handleTrackingSettingsChange,
-  );
+    function handleAuthChange() {
+      void syncDashboard();
+    }
 
-  return () => {
-    window.removeEventListener("auth-change", handleAuthChange);
-    window.removeEventListener(
+    function handleTrackingSettingsChange() {
+      loadSettings();
+    }
+
+    window.addEventListener("auth-change", handleAuthChange);
+    window.addEventListener(
       "tracking-settings-change",
       handleTrackingSettingsChange,
     );
-  };
-}, []);
+
+    return () => {
+      window.removeEventListener("auth-change", handleAuthChange);
+      window.removeEventListener(
+        "tracking-settings-change",
+        handleTrackingSettingsChange,
+      );
+    };
+  }, []);
 
   function canShowOnDashboard(field: keyof TrackingSettings) {
     if (!settings) return false;
@@ -152,10 +155,75 @@ export default function HomePage() {
   const totalBooks = books.length;
   const readingNow = books.filter((item) => item.status === "READING").length;
   const completed = books.filter((item) => item.status === "COMPLETED").length;
+
+  const authors = Array.from(
+    new Set(
+      books
+        .map((item) => item.book.author)
+        .filter((author): author is string => Boolean(author)),
+    ),
+  ).sort();
+
+  const tropes = Array.from(
+    new Set(
+      books
+        .flatMap((item) => item.tropes ?? [])
+        .filter((trope): trope is string => Boolean(trope)),
+    ),
+  ).sort();
+
+  const spiceLevels = Array.from(
+    new Set(
+      books
+        .map((item) => item.spiceLevel)
+        .filter((spice): spice is string => Boolean(spice)),
+    ),
+  ).sort();
+
+  const ratings = Array.from(
+    new Set(
+      books
+        .map((item) => item.rating)
+        .filter((rating): rating is number => rating !== null && rating !== undefined),
+    ),
+  ).sort((a, b) => b - a);
+
+  const categories = Array.from(
+    new Set(
+      books
+        .map((item) => item.category)
+        .filter((category): category is string => Boolean(category)),
+    ),
+  ).sort();
+
   const filteredBooks = books.filter((item) => {
-  if (statusFilter === "ALL") return true;
-  return item.status === statusFilter;
-});
+    const matchesStatus =
+      statusFilter === "ALL" || item.status === statusFilter;
+
+    const matchesAuthor =
+      authorFilter === "ALL" || item.book.author === authorFilter;
+
+    const matchesTrope =
+      tropeFilter === "ALL" || item.tropes?.includes(tropeFilter);
+
+    const matchesSpice =
+      spiceFilter === "ALL" || item.spiceLevel === spiceFilter;
+
+    const matchesRating =
+      ratingFilter === "ALL" || String(item.rating) === ratingFilter;
+
+    const matchesCategory =
+      categoryFilter === "ALL" || item.category === categoryFilter;
+
+    return (
+      matchesStatus &&
+      matchesAuthor &&
+      matchesTrope &&
+      matchesSpice &&
+      matchesRating &&
+      matchesCategory
+    );
+  });
 
   const heading = useMemo(() => {
     if (!user) return `Welcome to ${APP_NAME}`;
@@ -228,31 +296,123 @@ export default function HomePage() {
               <h2 className={styles.libraryTitle}>
                 {user ? "Your Books" : "Your Shelf Preview"}
               </h2>
+
               {user && (
-                <div style={{ marginTop: "12px" }}>
-                  <label style={{ marginRight: "8px" }}>Filter:</label>
-                  <select
-                    value={statusFilter}
-                    onChange={(e) =>
-                      setStatusFilter(e.target.value
-                      )
-                    }
-                    style={{
-                      height: "36px",
-                      padding: "0 10px",
-                      borderRadius: "8px",
-                      border: "1px solid #d9d9d9",
+                <div
+                  style={{
+                    marginTop: "12px",
+                    display: "flex",
+                    gap: "12px",
+                    flexWrap: "wrap",
+                    alignItems: "end",
+                  }}
+                >
+                  <label>
+                    Status{" "}
+                    <select
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value)}
+                    >
+                      <option value="ALL">All statuses</option>
+                      <option value="WANT_TO_READ">Want to Read</option>
+                      <option value="READING">Reading</option>
+                      <option value="PAUSED">Paused</option>
+                      <option value="COMPLETED">Completed</option>
+                      <option value="DNF">DNF</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    Author{" "}
+                    <select
+                      value={authorFilter}
+                      onChange={(e) => setAuthorFilter(e.target.value)}
+                    >
+                      <option value="ALL">All authors</option>
+                      {authors.map((author) => (
+                        <option key={author} value={author}>
+                          {author}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label>
+                    Trope{" "}
+                    <select
+                      value={tropeFilter}
+                      onChange={(e) => setTropeFilter(e.target.value)}
+                    >
+                      <option value="ALL">All tropes</option>
+                      {tropes.map((trope) => (
+                        <option key={trope} value={trope}>
+                          {trope}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label>
+                    Spice{" "}
+                    <select
+                      value={spiceFilter}
+                      onChange={(e) => setSpiceFilter(e.target.value)}
+                    >
+                      <option value="ALL">All spice levels</option>
+                      {spiceLevels.map((spice) => (
+                        <option key={spice} value={spice}>
+                          {formatEnumLabel(spice)}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label>
+                    Rating{" "}
+                    <select
+                      value={ratingFilter}
+                      onChange={(e) => setRatingFilter(e.target.value)}
+                    >
+                      <option value="ALL">All ratings</option>
+                      {ratings.map((rating) => (
+                        <option key={rating} value={String(rating)}>
+                          {rating}/5
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label>
+                    Category{" "}
+                    <select
+                      value={categoryFilter}
+                      onChange={(e) => setCategoryFilter(e.target.value)}
+                    >
+                      <option value="ALL">All categories</option>
+                      {categories.map((category) => (
+                        <option key={category} value={category}>
+                          {formatEnumLabel(category)}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStatusFilter("ALL");
+                      setAuthorFilter("ALL");
+                      setTropeFilter("ALL");
+                      setSpiceFilter("ALL");
+                      setRatingFilter("ALL");
+                      setCategoryFilter("ALL");
                     }}
                   >
-                    <option value="ALL">All</option>
-                    <option value="WANT_TO_READ">Want to Read</option>
-                    <option value="READING">Reading</option>
-                    <option value="PAUSED">Paused</option>
-                    <option value="COMPLETED">Completed</option>
-                    <option value="DNF">DNF</option>
-                  </select>
+                    Clear
+                  </button>
                 </div>
               )}
+
               <p className={styles.libraryHint}>
                 {user
                   ? "A quick look at your current reading shelf."
@@ -272,6 +432,10 @@ export default function HomePage() {
             <div className={styles.emptyState}>
               Your shelf is empty right now. Once books are added, they’ll
               appear here as beautifully organized reading cards.
+            </div>
+          ) : filteredBooks.length === 0 ? (
+            <div className={styles.emptyState}>
+              No books match your selected filters.
             </div>
           ) : (
             <ul className={styles.bookList}>
@@ -312,7 +476,9 @@ export default function HomePage() {
                       >
                         <div className={styles.bookTop}>
                           <div>
-                            <p className={styles.bookTitle}>{item.book.title}</p>
+                            <p className={styles.bookTitle}>
+                              {item.book.title}
+                            </p>
                             <p className={styles.bookAuthor}>
                               {item.book.author || "Author unknown"}
                             </p>
@@ -325,42 +491,55 @@ export default function HomePage() {
 
                         {settings ? (
                           <div className={styles.metaRow}>
-                            {canShowOnDashboard("category") && item.category ? (
-                              <span className={styles.metaPill}>Category: {formatEnumLabel(item.category)}</span>
+                            {canShowOnDashboard("category") &&
+                            item.category ? (
+                              <span className={styles.metaPill}>
+                                Category: {formatEnumLabel(item.category)}
+                              </span>
                             ) : null}
 
                             {canShowOnDashboard("seriesOrder") &&
                             item.seriesOrder !== undefined &&
                             item.seriesOrder !== null ? (
-                              <span className={styles.metaPill}>Book #{item.seriesOrder}</span>
+                              <span className={styles.metaPill}>
+                                Book #{item.seriesOrder}
+                              </span>
                             ) : null}
 
-                            {canShowOnDashboard("standaloneOrSeries") && item.standaloneOrSeries ? (
+                            {canShowOnDashboard("standaloneOrSeries") &&
+                            item.standaloneOrSeries ? (
                               <span className={styles.metaPill}>
                                 {formatEnumLabel(item.standaloneOrSeries)}
                               </span>
                             ) : null}
 
-                            {canShowOnDashboard("seriesStatus") && item.seriesStatus ? (
+                            {canShowOnDashboard("seriesStatus") &&
+                            item.seriesStatus ? (
                               <span className={styles.metaPill}>
                                 Series: {formatEnumLabel(item.seriesStatus)}
                               </span>
                             ) : null}
 
-                            {canShowOnDashboard("spiceLevel") && item.spiceLevel ? (
-                              <span className={styles.metaPill}>Spice: {formatEnumLabel(item.spiceLevel)}</span>
+                            {canShowOnDashboard("spiceLevel") &&
+                            item.spiceLevel ? (
+                              <span className={styles.metaPill}>
+                                Spice: {formatEnumLabel(item.spiceLevel)}
+                              </span>
                             ) : null}
 
                             {canShowOnDashboard("rating") &&
                             item.rating !== undefined &&
                             item.rating !== null ? (
-                              <span className={styles.metaPill}>Rating: {Number(item.rating).toString()}/5</span>
+                              <span className={styles.metaPill}>
+                                Rating: {Number(item.rating).toString()}/5
+                              </span>
                             ) : null}
 
                             {canShowOnDashboard("audiobookAvailable") &&
                             typeof item.audiobookAvailable === "boolean" ? (
                               <span className={styles.metaPill}>
-                                Audiobook: {item.audiobookAvailable ? "Yes" : "No"}
+                                Audiobook:{" "}
+                                {item.audiobookAvailable ? "Yes" : "No"}
                               </span>
                             ) : null}
 
