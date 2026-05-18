@@ -4,7 +4,7 @@ import { BooksService } from './books.service';
 import { GoogleBooksService } from './google-books.service';
 
 @Module({
-  controllers: [BooksController, GoogleBooksService],
-  providers: [BooksService],
+  controllers: [BooksController],
+  providers: [BooksService, GoogleBooksService],
 })
 export class BooksModule {}
