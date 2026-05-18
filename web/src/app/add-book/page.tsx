@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { APP_NAME, APP_TAGLINE } from "@/config/app";
 import styles from "../../styles/home.module.css";
+import { lookupBookByIsbn, type BookLookupResult } from "@/lib/googleBooks";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
@@ -21,6 +22,9 @@ export default function AddBookPage() {
   const [author, setAuthor] = useState("");
   const [coverUrl, setCoverUrl] = useState("");
   const [isbn, setIsbn] = useState("");
+  const [lookupResult, setLookupResult] = useState<BookLookupResult | null>(null);
+  const [lookupError, setLookupError] = useState("");
+  const [isLookingUp, setIsLookingUp] = useState(false);
   const [pageCount, setPageCount] = useState("");
 
   const [status, setStatus] = useState<ReadingStatus>("WANT_TO_READ");
@@ -134,6 +138,40 @@ export default function AddBookPage() {
     }
   }
 
+  async function handleLookupByIsbn() {
+  setLookupError("");
+  setLookupResult(null);
+
+  const cleanIsbn = isbn.replace(/[^0-9Xx]/g, "");
+
+  if (!cleanIsbn) {
+    setLookupError("Enter or scan an ISBN first.");
+    return;
+  }
+
+  setIsLookingUp(true);
+
+  try {
+    const result = await lookupBookByIsbn(cleanIsbn);
+
+    if (!result) {
+      setLookupError("No book found for that ISBN.");
+      return;
+    }
+
+    setLookupResult(result);
+
+    setTitle(result.title ?? "");
+    setAuthor(result.author ?? "");
+    setPageCount(result.pageCount ? String(result.pageCount) : "");
+    setCoverUrl(result.coverUrl ?? "");
+  } catch {
+    setLookupError("Could not look up that book right now.");
+  } finally {
+    setIsLookingUp(false);
+  }
+}
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -145,6 +183,57 @@ export default function AddBookPage() {
             your next favorite story close.
           </p>
         </div>
+
+        <section className={styles.card}>
+          <h2>Find by ISBN</h2>
+          <p>
+            Scan a barcode or type an ISBN to pull book details from Google Books.
+          </p>
+
+          <div className={styles.lookupRow}>
+            <input
+              value={isbn}
+              onChange={(e) => setIsbn(e.target.value)}
+              placeholder="Scan or enter ISBN"
+            />
+
+            <button
+              type="button"
+              onClick={handleLookupByIsbn}
+              disabled={isLookingUp}
+            >
+              {isLookingUp ? "Looking up..." : "Lookup"}
+            </button>
+          </div>
+
+          {lookupError ? <p className={styles.errorText}>{lookupError}</p> : null}
+
+          {lookupResult ? (
+            <div className={styles.lookupResult}>
+              {lookupResult.coverUrl ? (
+                <img
+                  src={lookupResult.coverUrl}
+                  alt={`Cover for ${lookupResult.title}`}
+                  className={styles.lookupCover}
+                />
+              ) : null}
+
+              <div>
+                <h3>{lookupResult.title}</h3>
+                <p>{lookupResult.author || "Author unknown"}</p>
+
+                {lookupResult.pageCount ? (
+                  <p>{lookupResult.pageCount} pages</p>
+                ) : null}
+
+                <p className={styles.sourceNote}>
+                  Book details provided by Google Books. Please review and edit before
+                  saving.
+                </p>
+              </div>
+            </div>
+          ) : null}
+        </section>
 
         <form
           onSubmit={handleSubmit}

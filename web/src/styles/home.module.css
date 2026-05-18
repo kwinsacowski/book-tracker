@@ -283,3 +283,62 @@
   font-size: 13px;
   font-weight: 600;
 }
+
+.lookupRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.lookupRow input {
+  flex: 1;
+  min-width: 220px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.lookupRow button {
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: none;
+  background: var(--primary);
+  color: var(--surface);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.lookupRow button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.lookupResult {
+  display: flex;
+  gap: 16px;
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+}
+
+.lookupCover {
+  width: 86px;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.sourceNote {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+.errorText {
+  margin-top: 10px;
+  color: #b42318;
+  font-weight: 700;
+}
