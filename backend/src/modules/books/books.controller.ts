@@ -14,11 +14,15 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { BooksService } from './books.service';
 import { AddToLibraryDto } from './dto/add-to-library.dto';
 import { UpdateUserBookDto } from './dto/update-userbook.dto';
+import { GoogleBooksService } from './google-books.service';
 
 @Controller('books')
 @UseGuards(JwtAuthGuard)
 export class BooksController {
-  constructor(private readonly booksService: BooksService) {}
+  constructor(
+    private readonly booksService: BooksService,
+    private readonly googleBooksService: GoogleBooksService,
+  ) {}
 
   @Get()
   async getMyLibrary(@CurrentUser() user: AuthUser) {
@@ -68,5 +72,10 @@ export class BooksController {
       bookId,
     );
     return removedBook;
+  }
+
+  @Get('lookup/isbn/:isbn')
+  lookupByIsbn(@Param('isbn') isbn: string) {
+    return this.googleBooksService.lookupByIsbn(isbn);
   }
 }
