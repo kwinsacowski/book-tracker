@@ -12,13 +12,24 @@ import {
   saveTrackingSettings,
   type TrackingSettings,
 } from "@/lib/settings";
+import {
+  getThemeSettings,
+  resetThemeSettings,
+  saveThemeSettings,
+  THEME_PRESETS,
+  type ThemeColors,
+  type ThemeSettings,
+} from "@/lib/theme";
+
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<TrackingSettings | null>(null);
   const [savedMessage, setSavedMessage] = useState("");
+  const [themeSettings, setThemeSettings] = useState<ThemeSettings | null>(null);
 
   useEffect(() => {
     setSettings(getTrackingSettings());
+    setThemeSettings(getThemeSettings());
   }, []);
 
   const trackedCount = useMemo(() => {
@@ -75,6 +86,45 @@ export default function SettingsPage() {
     resetTrackingSettings();
     setSettings(getTrackingSettings());
     setSavedMessage("Settings reset to defaults.");
+    window.setTimeout(() => setSavedMessage(""), 2000);
+  }
+
+  function updateThemeColor(key: keyof ThemeColors, value: string) {
+    setThemeSettings((current) => {
+      if (!current) return current;
+
+      return {
+        activeThemeId: "custom",
+        colors: {
+          ...current.colors,
+          [key]: value,
+        },
+      };
+    });
+  }
+
+  function selectPresetTheme(themeId: string) {
+    const preset = THEME_PRESETS.find((theme) => theme.id === themeId);
+    if (!preset) return;
+
+    setThemeSettings({
+      activeThemeId: preset.id,
+      colors: preset.colors,
+    });
+  }
+
+  function handleSaveTheme() {
+    if (!themeSettings) return;
+
+    saveThemeSettings(themeSettings);
+    setSavedMessage("Theme saved.");
+    window.setTimeout(() => setSavedMessage(""), 2000);
+  }
+
+  function handleResetTheme() {
+    resetThemeSettings();
+    setThemeSettings(getThemeSettings());
+    setSavedMessage("Theme reset.");
     window.setTimeout(() => setSavedMessage(""), 2000);
   }
 
@@ -154,6 +204,76 @@ export default function SettingsPage() {
               <div>Dashboard</div>
               <div>Single Book</div>
             </div>
+
+            {themeSettings ? (
+              <section className={styles.card}>
+                <div className={styles.tableHeader}>
+                  <div>
+                    <h2 className={styles.sectionTitle}>Theme Settings</h2>
+                    <p className={styles.sectionText}>
+                      Choose a premade theme or customize your own colors.
+                    </p>
+                  </div>
+
+                  <div className={styles.actions}>
+                    <button
+                      type="button"
+                      onClick={handleResetTheme}
+                      className={styles.secondaryButton}
+                    >
+                      Reset Theme
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSaveTheme}
+                      className={styles.primaryButton}
+                    >
+                      Save Theme
+                    </button>
+                  </div>
+                </div>
+
+                <div className={styles.themeGrid}>
+                  {THEME_PRESETS.map((theme) => (
+                    <button
+                      key={theme.id}
+                      type="button"
+                      onClick={() => selectPresetTheme(theme.id)}
+                      className={`${styles.themePreset} ${
+                        themeSettings.activeThemeId === theme.id ? styles.activeTheme : ""
+                      }`}
+                    >
+                      <span>{theme.name}</span>
+                      <span className={styles.swatches}>
+                        {Object.values(theme.colors).slice(0, 5).map((color) => (
+                          <span
+                            key={color}
+                            className={styles.swatch}
+                            style={{ backgroundColor: color }}
+                          />
+                        ))}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                <div className={styles.colorGrid}>
+                  {Object.entries(themeSettings.colors).map(([key, value]) => (
+                    <label key={key} className={styles.colorField}>
+                      <span>{key}</span>
+                      <input
+                        type="color"
+                        value={value}
+                        onChange={(e) =>
+                          updateThemeColor(key as keyof ThemeColors, e.target.value)
+                        }
+                      />
+                      <code>{value}</code>
+                    </label>
+                  ))}
+                </div>
+              </section>
+            ) : null}
 
             {OPTIONAL_TRACKING_FIELDS.map((field) => {
               const current = settings[field.key];

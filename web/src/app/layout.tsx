@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import NavBar from "../components/navbar";
+import ThemeProvider from "@/components/ThemeProvider";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,16 +27,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "260px 1fr",
-            minHeight: "100vh",
-          }}
-        >
-          <NavBar />
-          <main style={{ minWidth: 0 }}>{children}</main>
-        </div>
+        <ThemeProvider>
+          <div className="appLayout">
+            <NavBar />
+            <main className="appMain">{children}</main>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );

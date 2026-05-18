@@ -1,11 +1,19 @@
 :root {
   --background: #efe7da;
   --foreground: #1f2520;
-  --surface: rgba(255, 252, 246, 0.78);
-  --surface-strong: #fffaf2;
-  --border: rgba(47, 62, 52, 0.12);
-  --shadow: 0 18px 45px rgba(31, 37, 32, 0.1);
-  --shadow-soft: 0 10px 28px rgba(31, 37, 32, 0.07);
+  --surface: #fffaf2;
+  --surface-strong: #fffdf8;
+  --primary: #2f3e34;
+  --primary-hover: #243129;
+  --secondary: #5f7a61;
+  --accent: #c2a878;
+  --nav-start: #425347;
+  --nav-end: #2f3e34;
+
+  --border: color-mix(in srgb, var(--primary) 16%, transparent);
+  --shadow: 0 18px 45px color-mix(in srgb, var(--foreground) 12%, transparent);
+  --shadow-soft: 0 10px 28px
+    color-mix(in srgb, var(--foreground) 8%, transparent);
 }
 
 html,
@@ -19,18 +27,26 @@ body {
   background:
     radial-gradient(
       circle at top left,
-      rgba(194, 168, 120, 0.22),
+      color-mix(in srgb, var(--accent) 24%, transparent),
       transparent 28%
     ),
     radial-gradient(
       circle at bottom right,
-      rgba(95, 122, 97, 0.18),
+      color-mix(in srgb, var(--secondary) 20%, transparent),
       transparent 24%
     ),
-    linear-gradient(180deg, #f7f1e7 0%, #eee4d4 100%);
+    linear-gradient(180deg, var(--surface) 0%, var(--background) 100%);
   font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+}
+
+.appLayout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+}
+
+.appMain {
+  min-width: 0;
 }
 
 * {
@@ -40,7 +56,7 @@ body {
 }
 
 *::selection {
-  background: rgba(194, 168, 120, 0.35);
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
 a {
@@ -53,4 +69,10 @@ input,
 textarea,
 select {
   font: inherit;
+}
+
+@media (max-width: 900px) {
+  .appLayout {
+    grid-template-columns: 1fr;
+  }
 }
