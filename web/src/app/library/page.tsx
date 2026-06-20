@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import Bookshelf, { ShelfBook } from "../../components/Bookshelf";
+import RealisticBookshelf, {
+  ShelfBook,
+} from "./RealisticBookshelf";
 import { BackendLibraryItem, getLibraryBooks } from "@/lib/books";
 import styles from "./page.module.css";
 
@@ -142,7 +144,8 @@ export default function LibraryPage() {
       <div className={styles.errorCard}>{error}</div>
     ) : (
       <section className={styles.shelfSection}>
-        <Bookshelf books={shelfBooks} newlyAddedBookId={newlyAddedBookId} />
+        <RealisticBookshelf books={shelfBooks}
+        newlyAddedBookId={newlyAddedBookId}/>
       </section>
     )}
   </main>

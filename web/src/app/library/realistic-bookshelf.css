@@ -1,0 +1,198 @@
+.library-room {
+  min-height: 100vh;
+  padding: 2rem;
+  color: #f3ead7;
+  background:
+    radial-gradient(circle at top, rgba(182, 132, 75, 0.18), transparent 35%),
+    linear-gradient(180deg, #080706, #15100c 45%, #090807);
+}
+
+.library-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.library-header h1 {
+  font-family: Georgia, serif;
+  font-size: 3rem;
+}
+
+.eyebrow {
+  color: #c4a56f;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.add-book-button {
+  background: #211811;
+  border: 1px solid #6f5739;
+  color: #f3ead7;
+  padding: 0.8rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+}
+
+.bookshelf {
+  padding: 2rem 2rem 0;
+  border: 18px solid #2a160c;
+  border-radius: 12px;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.45), transparent 12%, transparent 88%, rgba(0,0,0,.45)),
+    linear-gradient(#201007, #3a2113);
+  box-shadow: inset 0 0 60px rgba(0,0,0,.75), 0 30px 80px rgba(0,0,0,.65);
+}
+
+.shelf-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.45rem;
+  min-height: 230px;
+  padding: 0 1rem;
+}
+
+.wood-shelf {
+  height: 28px;
+  margin-top: 0.2rem;
+  background:
+    linear-gradient(180deg, #6b3d20, #2d160a),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.08) 0 2px, transparent 2px 18px);
+  box-shadow: 0 -6px 18px rgba(0,0,0,.6), 0 8px 20px rgba(0,0,0,.75);
+}
+
+.book-spine {
+  position: relative;
+  border: none;
+  border-radius: 4px 8px 5px 4px;
+  color: #d9bd7a;
+  cursor: pointer;
+  box-shadow:
+    inset 7px 0 10px rgba(255,255,255,.08),
+    inset -9px 0 14px rgba(0,0,0,.45),
+    4px 0 8px rgba(0,0,0,.5);
+  transform-origin: bottom center;
+  overflow: hidden;
+}
+
+.book-spine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.12), transparent 20%, transparent 70%, rgba(0,0,0,.35)),
+    repeating-linear-gradient(0deg, transparent 0 12px, rgba(255,255,255,.035) 12px 13px);
+}
+
+.spine-title {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  width: 140px;
+  transform: translate(-50%, -50%) rotate(90deg);
+  font-family: Georgia, serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.spine-author {
+  position: absolute;
+  left: 50%;
+  bottom: 1rem;
+  width: 100px;
+  transform: translateX(-50%) rotate(90deg);
+  font-size: 0.55rem;
+  opacity: 0.75;
+}
+
+.spine-lines {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  height: 1px;
+  background: rgba(219, 179, 99, 0.7);
+}
+
+.spine-lines.top {
+  top: 16px;
+}
+
+.spine-lines.bottom {
+  bottom: 16px;
+}
+
+.book-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.68);
+  display: grid;
+  place-items: center;
+  z-index: 50;
+  perspective: 1600px;
+}
+
+.open-book {
+  display: flex;
+  width: min(760px, 92vw);
+  min-height: 430px;
+  transform-style: preserve-3d;
+}
+
+.book-cover {
+  width: 45%;
+  padding: 2rem;
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,.08), transparent 40%),
+    linear-gradient(135deg, #713223, #37130d);
+  border: 2px solid #b4894f;
+  color: #e9c779;
+  font-family: Georgia, serif;
+  box-shadow: 20px 20px 40px rgba(0,0,0,.45);
+  transform-origin: right center;
+}
+
+.book-cover h2 {
+  margin-top: 5rem;
+  text-align: center;
+  font-size: 2rem;
+}
+
+.book-cover p {
+  text-align: center;
+}
+
+.book-pages {
+  width: 55%;
+  padding: 2rem;
+  background:
+    repeating-linear-gradient(90deg, #f1dfb8 0 7px, #ead3a7 7px 8px);
+  color: #2b1a10;
+  font-family: Georgia, serif;
+  box-shadow: inset 12px 0 18px rgba(0,0,0,.18);
+}
+
+.chapter-label {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.7rem;
+  color: #7d5630;
+}
+
+.book-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.book-actions a,
+.book-actions button {
+  border: 1px solid #5a3a1d;
+  background: #2b1a10;
+  color: #f7ead0;
+  padding: 0.7rem 1rem;
+  border-radius: 0.4rem;
+  text-decoration: none;
+  cursor: pointer;
+}
